@@ -11,17 +11,20 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Upcoming
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -37,6 +40,7 @@ import com.example.tipwise.R
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.ui.worker.FeedScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
 
@@ -46,6 +50,21 @@ fun HomeScreen(navController: NavHostController) {
         bottomBar = {
             BottomNavigationBar(
                 bottomNavController = bottomNavController
+            )
+        },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Tipwise",
+                        color = PacificBridge,
+                        fontSize = 18.sp
+                    )
+                },
+                modifier = Modifier.shadow(2.dp),
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    Color.White
+                )
             )
         }
     ) {
