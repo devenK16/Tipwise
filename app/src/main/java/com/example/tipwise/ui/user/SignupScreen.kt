@@ -20,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,12 +32,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.utils.NetworkResult
+import com.example.tipwise.utils.ProfileSetupManager
 import com.example.tipwise.utils.TokenManager
 import javax.inject.Inject
 
@@ -43,8 +49,17 @@ import javax.inject.Inject
 @Composable
 fun SignupScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    profileSetupManager: ProfileSetupManager
 ) {
+    val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
+
+    LaunchedEffect(tokenManager.getToken()) {
+        if (tokenManager.getToken() != null) {
+            navController.navigate("home")
+        }
+    }
 
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -54,25 +69,44 @@ fun SignupScreen(
         Icons.Filled.Visibility
     else
         Icons.Filled.VisibilityOff
+    var errorMessage by remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            text = "Create New Account",
+            fontSize = 30.sp,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            text = "Please provide all the required information",
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(48.dp))
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
             label = { Text(text = "Username ") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
+                unfocusedBorderColor = Color.Black,
                 focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
+                unfocusedLabelColor = Color.Black,
                 focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
                 focusedTextColor = PacificBridge,
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
@@ -88,11 +122,11 @@ fun SignupScreen(
             label = { Text("Email") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
+                unfocusedBorderColor = Color.Black,
                 focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
+                unfocusedLabelColor = Color.Black,
                 focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
                 focusedTextColor = PacificBridge,
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
@@ -119,11 +153,11 @@ fun SignupScreen(
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
+                unfocusedBorderColor = Color.Black,
                 focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
+                unfocusedLabelColor = Color.Black,
                 focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
                 focusedTextColor = PacificBridge,
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
@@ -132,6 +166,13 @@ fun SignupScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
+        Text(
+            text = errorMessage,
+            modifier = Modifier
+                .padding(10.dp),
+            color = Color.Red,
+            fontSize = 10.sp
+        )
         Spacer(modifier = Modifier.height(44.dp))
         Button(
             onClick = {
@@ -139,12 +180,12 @@ fun SignupScreen(
                     username,
                     email,
                     password,
-                    false
+                    isLogin = false
                 )
                 if (isValid) {
                     viewModel.registerUser(UserRequest(username, email, password))
                 } else {
-                    // Show error message
+                    errorMessage = message
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -162,12 +203,38 @@ fun SignupScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
         TextButton(
-            onClick = { navController.navigate("login") }
+            onClick = { navController.navigate("login") },
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text = "Already have an account? Login",
-                color = PacificBridge
+                color = PacificBridge,
+                textAlign = TextAlign.Center
             )
+        }
+    }
+
+    when (val userResponse = userResponseLiveData) {
+        is NetworkResult.Success -> {
+            tokenManager.saveToken(userResponse.data!!.token)
+            navController.navigate("home")
+//            if (profileSetupManager.isProfileSetupCompleted()) {
+//                navController.navigate("home")
+//            } else {
+//                navController.navigate("profile")
+//            }
+        }
+
+        is NetworkResult.Error -> {
+            errorMessage = userResponse.message ?: "An unknown error occurred"
+        }
+
+        is NetworkResult.Loading -> {
+            // Show loading indicator
+        }
+
+        else -> {
+            // Do nothing
         }
     }
 }

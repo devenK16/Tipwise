@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,28 +62,8 @@ fun AddWorkerScreen(
     workerId: String? = null
 ) {
     val workerResult by viewModel.workerLiveData.observeAsState()
-    val worker = when (workerResult) {
-        is NetworkResult.Success -> {
-            if (workerId != null) {
-                (workerResult as NetworkResult.Success<List<WorkerResponse>>).data?.firstOrNull { request -> request._id == workerId }
-            } else {
-                null
-            }
-        }
 
-        is NetworkResult.Error -> {
-            // Handle error case
-            null
-        }
-
-        is NetworkResult.Loading -> {
-            // Handle loading case
-            null
-        }
-
-        null -> null
-    }
-
+    // Initialize state variables
     var name by remember { mutableStateOf("") }
     var profession by remember { mutableStateOf("") }
     var upiId by remember { mutableStateOf("") }
@@ -89,10 +72,32 @@ fun AddWorkerScreen(
     var ifscCode by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    // Fetch worker data if workerId is provided
+    LaunchedEffect(workerId) {
+        if (workerId != null) {
+            viewModel.getWorkerById(workerId)
+        }
+    }
+
+    // Handle workerResult and update state variables accordingly
+    LaunchedEffect(workerResult) {
+        if (workerResult is NetworkResult.Success && workerId != null) {
+            (workerResult as NetworkResult.Success<List<WorkerResponse>>).data?.firstOrNull { it._id == workerId }?.let { worker ->
+                name = worker.name
+                profession = worker.profession
+                upiId = worker.upiId
+                bankAccountName = worker.bankAccountName
+                bankAccountNumber = worker.bankAccountNumber
+                ifscCode = worker.ifscCode
+                imageUri = worker.photo?.let { Uri.parse(it) }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (worker != null) "Update Worker" else "Add Worker") },
+                title = { Text(if (workerId != null) "Update Worker" else "Add Worker") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -109,19 +114,19 @@ fun AddWorkerScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
-
             if (imageUri != null) {
                 Box(
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(200.dp)
                         .clip(CircleShape)
                         .background(Color.LightGray)
+                        .clickable { imageUri = null }
                 ) {
                     Image(
                         painter = rememberImagePainter(imageUri),
                         contentDescription = "Selected Image",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -131,6 +136,7 @@ fun AddWorkerScreen(
                 ImageUploadButton(
                     onImageSelect = { imageUri = it },
                     modifier = Modifier
+                        .size(200.dp)
                 )
             }
 
@@ -179,7 +185,7 @@ fun AddWorkerScreen(
             OutlinedTextField(
                 value = upiId,
                 onValueChange = { upiId = it },
-                label = { Text("upiId") },
+                label = { Text("UPI ID") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = PacificBridge,
                     unfocusedBorderColor = Color.Black,
@@ -257,36 +263,61 @@ fun AddWorkerScreen(
             )
             Spacer(modifier = Modifier.height(44.dp))
 
-            Button(
-                onClick = {
-                    val workerRequest = WorkerRequest(
-                        name = name,
-                        profession = profession,
-                        bankAccountName = bankAccountName,
-                        bankAccountNumber = bankAccountNumber,
-                        ifscCode = ifscCode,
-                        photo = imageUri?.toString() ?: "",
-                        upiId = upiId
-                    )
-                    if (worker != null) {
-                        viewModel.updateNote(workerRequest, workerId!!)
-                    } else {
-                        viewModel.createNote(workerRequest)
-                    }
-                    navController.navigateUp()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PacificBridge
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = if (worker != null) "Update" else "Add",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
+                Button(
+                    onClick = {
+                        val workerRequest = WorkerRequest(
+                            name = name,
+                            profession = profession,
+                            bankAccountName = bankAccountName,
+                            bankAccountNumber = bankAccountNumber,
+                            ifscCode = ifscCode,
+                            photo = imageUri?.toString() ?: "",
+                            upiId = upiId
+                        )
+                        if (workerId != null) {
+                            viewModel.updateWorker(workerRequest, workerId)
+                        } else {
+                            viewModel.createWorkers(workerRequest)
+                        }
+                        navController.navigateUp()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PacificBridge
+                    ),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 5.dp)
+                ) {
+                    Text(
+                        text = if (workerId != null) "Update" else "Add",
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
+                if (workerId != null) {
+                    Button(
+                        onClick = {
+                            viewModel.deleteWorker(workerId)
+                            navController.navigateUp()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 5.dp)
+                    ) {
+                        Text(
+                            text = "Delete",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                    }
+                }
             }
         }
     }
@@ -297,7 +328,6 @@ fun ImageUploadButton(
     onImageSelect: (Uri) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -324,13 +354,13 @@ fun CircleWithText(
 ) {
     Box(
         modifier = modifier
-            .size(120.dp)
+            .fillMaxSize()
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .size(100.dp)
+                .fillMaxSize()
                 .padding(4.dp)
                 .background(color = Color.LightGray, shape = CircleShape),
             contentAlignment = Alignment.Center

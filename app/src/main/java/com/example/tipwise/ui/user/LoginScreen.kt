@@ -17,9 +17,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,19 +32,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.utils.NetworkResult
+import com.example.tipwise.utils.ProfileSetupManager
+import com.example.tipwise.utils.TokenManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    profileSetupManager : ProfileSetupManager
 ) {
+
+    val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
@@ -49,25 +61,43 @@ fun LoginScreen(
         Icons.Filled.Visibility
     else
         Icons.Filled.VisibilityOff
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            text = "Welcome Back!",
+            fontSize = 30.sp,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            text = "Login to access your account",
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(48.dp))
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
+                unfocusedBorderColor = Color.Black,
                 focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
+                unfocusedLabelColor = Color.Black,
                 focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
                 focusedTextColor = PacificBridge,
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
@@ -94,11 +124,11 @@ fun LoginScreen(
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
+                unfocusedBorderColor = Color.Black,
                 focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
+                unfocusedLabelColor = Color.Black,
                 focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
                 focusedTextColor = PacificBridge,
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
@@ -107,6 +137,13 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
+        Text(
+            text = errorMessage,
+            modifier = Modifier
+                .padding(10.dp),
+            color = Color.Red,
+            fontSize = 10.sp
+        )
         Spacer(modifier = Modifier.height(44.dp))
         Button(
             onClick = {
@@ -114,13 +151,14 @@ fun LoginScreen(
                 if (isValid) {
                     viewModel.loginUser(UserRequest("", email, password))
                 } else {
-                    // Show error message
+                    errorMessage = message
                 }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = PacificBridge
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
             Text(
@@ -128,6 +166,41 @@ fun LoginScreen(
                 fontSize = 20.sp,
                 color = Color.White
             )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        TextButton(
+            onClick = {
+                navController.popBackStack()
+                navController.navigate("signup")
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = "Don't have an account? Register Now",
+                color = PacificBridge,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+
+    when (val userResponse = userResponseLiveData) {
+        is NetworkResult.Success -> {
+            tokenManager.saveToken(userResponse.data!!.token)
+            navController.navigate("home")
+//            if (profileSetupManager.isProfileSetupCompleted()) {
+//                navController.navigate("home")
+//            } else {
+//                navController.navigate("profile")
+//            }
+        }
+        is NetworkResult.Error -> {
+            errorMessage = userResponse.message.toString()
+        }
+        is NetworkResult.Loading -> {
+            // Show loading indicator
+        }
+        else -> {
+            // Do nothing
         }
     }
 }

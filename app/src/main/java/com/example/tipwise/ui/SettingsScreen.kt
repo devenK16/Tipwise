@@ -44,7 +44,7 @@ fun SettingsScreen(
     navController: NavHostController
 ) {
     Column {
-        ProfileCardUI()
+        ProfileCardUI(navController)
         GeneralUI()
         SupportOptionsUI()
     }
@@ -52,7 +52,7 @@ fun SettingsScreen(
 }
 
 @Composable
-fun ProfileCardUI() {
+fun ProfileCardUI(navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +81,10 @@ fun ProfileCardUI() {
 
                 Button(
                     modifier = Modifier.padding(top = 10.dp),
-                    onClick = {},
+                    onClick = {
+                        navController.popBackStack()
+                        navController.navigate("profile")
+                    },
                     contentPadding = PaddingValues(horizontal = 30.dp),
                     elevation = ButtonDefaults.elevation(
                         defaultElevation = 0.dp,

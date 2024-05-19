@@ -43,4 +43,5 @@ class NetworkModule {
     fun providesWorkersAPI( retrofitBuilder : Retrofit.Builder , okHttpClient: OkHttpClient) : WorkersAPI{
         return retrofitBuilder.client(okHttpClient).build().create(WorkersAPI::class.java)
     }
+
 }

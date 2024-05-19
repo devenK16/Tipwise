@@ -13,25 +13,31 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
     val workerLiveData get() = workerRepository.workerLiveData
     val statusLiveData get() = workerRepository.statusLiveData
 
-    fun getNotes(){
+    fun getWorkers(){
         viewModelScope.launch {
             workerRepository.getWorkers()
         }
     }
 
-    fun createNote(workerRequest: WorkerRequest ){
+    fun createWorkers(workerRequest: WorkerRequest ){
         viewModelScope.launch {
             workerRepository.createWorker(workerRequest)
         }
     }
 
-    fun deleteNote(workerId: String){
+    fun deleteWorker(workerId: String){
         viewModelScope.launch {
             workerRepository.deleteWorker(workerId)
         }
     }
 
-    fun updateNote(workerRequest: WorkerRequest , workerId: String){
+    fun getWorkerById(workerId: String) {
+        viewModelScope.launch {
+            workerRepository.getWorkerById(workerId)
+        }
+    }
+
+    fun updateWorker(workerRequest: WorkerRequest , workerId: String){
         viewModelScope.launch {
             workerRepository.updateWorker(workerRequest, workerId)
         }

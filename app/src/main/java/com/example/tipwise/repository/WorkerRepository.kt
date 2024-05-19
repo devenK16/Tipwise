@@ -51,11 +51,25 @@ class WorkerRepository @Inject constructor( private val workersAPI: WorkersAPI )
         handleResponse(response , "Worker Updated")
     }
 
+    suspend fun getWorkerById(workerId: String) {
+        _workerLiveData.postValue(NetworkResult.Loading())
+        val response = workersAPI.getWorkerById(workerId)
+        handleWorkerResponse(response)
+    }
+
     private fun handleResponse(response: Response<WorkerResponse> , message: String ) {
         if (response.isSuccessful && response.body() != null) {
             _statusLiveData.postValue(NetworkResult.Success(message))
         } else {
             _statusLiveData.postValue(NetworkResult.Error("Something went wrong"))
+        }
+    }
+
+    private fun handleWorkerResponse(response: Response<WorkerResponse>) {
+        if (response.isSuccessful && response.body() != null) {
+            _workerLiveData.postValue(NetworkResult.Success(listOf(response.body()!!)))
+        } else {
+            _workerLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
     }
 }

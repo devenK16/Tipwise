@@ -26,6 +26,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -49,6 +50,10 @@ fun FeedScreen(
 ) {
     val workersState by viewModel.workerLiveData.observeAsState()
     val workers = workersState?.data ?: emptyList()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.getWorkers()
+    }
 
     val tempWorker = WorkerResponse(
         __v = 5559,
@@ -76,26 +81,26 @@ fun FeedScreen(
             }
         }
     ) {
-//        LazyColumn(
-//            modifier = Modifier.padding(it)
-//        ) {
-//            itemsIndexed(workers) { index, worker ->
-//                WorkerItem(
-//                    worker = worker,
-//                    onWorkerClick = { navController.navigate("add_worker/${worker._id}") }
-//                )
-//            }
-//
-//        }
-
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(it)
         ) {
-            WorkerItem(
-                worker = tempWorker,
-                onWorkerClick = { navController.navigate("add_worker/${tempWorker._id}") }
-            )
+            itemsIndexed(workers) { index, worker ->
+                WorkerItem(
+                    worker = worker,
+                    onWorkerClick = { navController.navigate("add_worker/${worker._id}") }
+                )
+            }
+
         }
+
+//        Column(
+//            modifier = Modifier.padding(it)
+//        ) {
+//            WorkerItem(
+//                worker = tempWorker,
+//                onWorkerClick = { navController.navigate("add_worker/${tempWorker._id}") }
+//            )
+//        }
 
 
     }

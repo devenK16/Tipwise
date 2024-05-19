@@ -31,6 +31,18 @@ class AuthViewModel @Inject constructor( private val userRepository: UserReposit
         }
     }
 
+    fun getUser(userId: String){
+        viewModelScope.launch {
+            userRepository.getUser(userId)
+        }
+    }
+
+    fun updateUser(userId: String , userRequest: UserRequest ){
+        viewModelScope.launch {
+            userRepository.updateUser(userId, userRequest)
+        }
+    }
+
     fun validateCredentials(username: String , emailAddress: String , password: String , isLogin: Boolean) : Pair<Boolean,String>{
         var result = Pair(true ,"")
         if( (!isLogin && TextUtils.isEmpty(username)) || TextUtils.isEmpty(emailAddress) || TextUtils.isEmpty(password)){

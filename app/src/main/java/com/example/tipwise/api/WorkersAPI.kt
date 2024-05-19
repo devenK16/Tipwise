@@ -12,15 +12,18 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface WorkersAPI {
-    @GET("/workers")
+    @GET("api/workers")
     suspend fun getWorkers() : Response<List<WorkerResponse>>
 
-    @POST("/workers")
+    @POST("api/workers")
     suspend fun addWorker(@Body workerRequest: WorkerRequest ) : Response<WorkerResponse>
 
-    @DELETE("/workers/{workerId}")
+    @DELETE("api/workers/{workerId}")
     suspend fun deleteWorker( @Path("workerId") workerId: String ) : Response<WorkerResponse>
 
-    @PUT("/workers/{workerId}")
+    @PUT("api/workers/{workerId}")
     suspend fun updateWorker( @Path("workerId") workerId: String , @Body workerRequest: WorkerRequest ) : Response<WorkerResponse>
+
+    @GET("api/workers/worker/{workerId}")
+    suspend fun getWorkerById(@Path("workerId") workerId: String): Response<WorkerResponse>
 }

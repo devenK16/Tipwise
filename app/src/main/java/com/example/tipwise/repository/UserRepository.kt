@@ -18,8 +18,15 @@ class UserRepository @Inject constructor(private val usersAPI: UsersAPI) {
 
     suspend fun registerUser(userRequest: UserRequest) {
         _userResponseLiveData.postValue(NetworkResult.Loading())
-        val response = usersAPI.signUp(userRequest)
-        handleResponse(response)
+//        val response = usersAPI.signUp(userRequest)
+//        handleResponse(response)
+        try {
+            val response = usersAPI.signUp(userRequest)
+            handleResponse(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _userResponseLiveData.postValue(NetworkResult.Error("Exception occurred: ${e.message}"))
+        }
     }
 
     suspend fun loginUser(userRequest: UserRequest) {
@@ -28,14 +35,42 @@ class UserRepository @Inject constructor(private val usersAPI: UsersAPI) {
         handleResponse(response)
     }
 
+    suspend fun getUser(userId: String) {
+        _userResponseLiveData.postValue(NetworkResult.Loading())
+        val response = usersAPI.getUser(userId)
+        handleResponse(response)
+    }
+
+    suspend fun updateUser(userId: String, userRequest: UserRequest) {
+        _userResponseLiveData.postValue(NetworkResult.Loading())
+        val response = usersAPI.updateUser(userId, userRequest)
+        handleResponse(response)
+    }
+
     private fun handleResponse(response: Response<UserResponse>) {
         if (response.isSuccessful && response.body() != null) {
             _userResponseLiveData.postValue(NetworkResult.Success(response.body()!!))
-        } else if (response.errorBody() != null) {
-            val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _userResponseLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
         } else {
-            _userResponseLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            val errorBody = response.errorBody()?.string()
+            if (errorBody != null) {
+                try {
+                    // Check if the response is an HTML error page
+                    if (errorBody.trim().startsWith("<!DOCTYPE")) {
+                        _userResponseLiveData.postValue(NetworkResult.Error("Server returned an HTML error page. Possible server error or incorrect endpoint."))
+                    } else {
+                        // Try to parse the error body as JSON
+                        val errorObj = JSONObject(errorBody)
+                        val errorMessage = errorObj.optString("message", "Unknown error")
+                        _userResponseLiveData.postValue(NetworkResult.Error(errorMessage))
+                    }
+                } catch (e: Exception) {
+                    // If parsing fails, log the error and provide a generic message
+                    e.printStackTrace()
+                    _userResponseLiveData.postValue(NetworkResult.Error("Error parsing response: ${e.message}"))
+                }
+            } else {
+                _userResponseLiveData.postValue(NetworkResult.Error("No error body provided"))
+            }
         }
     }
 }

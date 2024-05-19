@@ -17,14 +17,21 @@ import com.example.tipwise.ui.HomeScreen
 import com.example.tipwise.ui.SettingsScreen
 import com.example.tipwise.ui.theme.TipwiseTheme
 import com.example.tipwise.ui.user.LoginScreen
+import com.example.tipwise.ui.user.ProfileScreen
 import com.example.tipwise.ui.user.SignupScreen
 import com.example.tipwise.ui.worker.AddWorkerScreen
 import com.example.tipwise.ui.worker.FeedScreen
+import com.example.tipwise.utils.ProfileSetupManager
+import com.example.tipwise.utils.TokenManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var tokenManager: TokenManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -33,15 +40,24 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 val navController = rememberNavController()
 
+                val profileSetupManager = ProfileSetupManager(this)
+
                 NavHost(
                     navController = navController,
-                    startDestination = "home"
+                    startDestination = "signup"
                 ) {
                     composable("login") {
-                        LoginScreen(navController = navController)
+                        LoginScreen(
+                            navController = navController, tokenManager = tokenManager,
+
+                            profileSetupManager = profileSetupManager
+                        )
                     }
                     composable("signup") {
-                        SignupScreen(navController = navController)
+                        SignupScreen(
+                            navController = navController, tokenManager = tokenManager,
+                            profileSetupManager = profileSetupManager
+                        )
                     }
                     composable("feed") {
                         FeedScreen(navController = navController)
@@ -59,13 +75,20 @@ class MainActivity : ComponentActivity() {
                     composable("settings") {
                         SettingsScreen(navController = navController)
                     }
+                    composable("profile") {
+                        ProfileScreen(
+                            navController = navController,
+                            authToken = tokenManager.getToken(),
+                            profileSetupManager = profileSetupManager
+                        )
+                    }
                 }
             }
         }
     }
 
     @Composable
-    private fun setBarColor( color : Color){
+    private fun setBarColor(color: Color) {
         val systemUiController = rememberSystemUiController()
         LaunchedEffect(key1 = color) {
             systemUiController.setSystemBarsColor(color)
