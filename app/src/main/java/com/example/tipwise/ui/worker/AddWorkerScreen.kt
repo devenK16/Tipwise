@@ -1,6 +1,7 @@
 package com.example.tipwise.ui.worker
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -48,7 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.tipwise.models.WorkerRequest
 import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.ui.theme.PacificBridge
@@ -71,6 +74,47 @@ fun AddWorkerScreen(
     var bankAccountNumber by remember { mutableStateOf("") }
     var ifscCode by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUrl1 by remember { mutableStateOf("") }
+
+    // Handle form submission
+    fun handleFormSubmission() {
+        viewModel.uploadImageToFirebase(imageUri) { imageUrl ->
+            Log.d("ImageUrl" , imageUrl)
+            val workerRequest = WorkerRequest(
+                name = name,
+                profession = profession,
+                bankAccountName = bankAccountName,
+                bankAccountNumber = bankAccountNumber,
+                ifscCode = ifscCode,
+                photo = imageUrl,
+                upiId = upiId
+            )
+            if (workerId != null) {
+                viewModel.updateWorker(workerRequest, workerId)
+            } else {
+                viewModel.createWorkers(workerRequest)
+            }
+            navController.navigateUp()
+        }
+    }
+
+    fun saveWorker(imageUrl: String) {
+        val workerRequest = WorkerRequest(
+            name = name,
+            profession = profession,
+            bankAccountName = bankAccountName,
+            bankAccountNumber = bankAccountNumber,
+            ifscCode = ifscCode,
+            photo = imageUrl1,
+            upiId = upiId
+        )
+        if (workerId != null) {
+            viewModel.updateWorker(workerRequest, workerId)
+        } else {
+            viewModel.createWorkers(workerRequest)
+        }
+        navController.navigateUp()
+    }
 
     // Fetch worker data if workerId is provided
     LaunchedEffect(workerId) {
@@ -89,7 +133,7 @@ fun AddWorkerScreen(
                 bankAccountName = worker.bankAccountName
                 bankAccountNumber = worker.bankAccountNumber
                 ifscCode = worker.ifscCode
-                imageUri = worker.photo?.let { Uri.parse(it) }
+                imageUrl1 = worker.photo
             }
         }
     }
@@ -134,7 +178,9 @@ fun AddWorkerScreen(
                 }
             } else {
                 ImageUploadButton(
+                    viewModel = viewModel,
                     onImageSelect = { imageUri = it },
+                    imageUrl = imageUrl1,
                     modifier = Modifier
                         .size(200.dp)
                 )
@@ -269,21 +315,7 @@ fun AddWorkerScreen(
             ) {
                 Button(
                     onClick = {
-                        val workerRequest = WorkerRequest(
-                            name = name,
-                            profession = profession,
-                            bankAccountName = bankAccountName,
-                            bankAccountNumber = bankAccountNumber,
-                            ifscCode = ifscCode,
-                            photo = imageUri?.toString() ?: "",
-                            upiId = upiId
-                        )
-                        if (workerId != null) {
-                            viewModel.updateWorker(workerRequest, workerId)
-                        } else {
-                            viewModel.createWorkers(workerRequest)
-                        }
-                        navController.navigateUp()
+                        handleFormSubmission()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PacificBridge
@@ -325,7 +357,9 @@ fun AddWorkerScreen(
 
 @Composable
 fun ImageUploadButton(
+    viewModel: WorkerViewModel,
     onImageSelect: (Uri) -> Unit,
+    imageUrl: String,
     modifier: Modifier = Modifier
 ) {
     val launcher = rememberLauncherForActivityResult(
@@ -337,13 +371,36 @@ fun ImageUploadButton(
         }
     )
 
-    CircleWithText(
-        text = "Upload",
-        modifier = modifier,
-        onClick = {
-            launcher.launch("image/*")
+    if (imageUrl.isEmpty()) { // Check if imageUrl is empty
+        CircleWithText(
+            text = "Upload",
+            modifier = modifier,
+            onClick = {
+                launcher.launch("image/*")
+            }
+        )
+    } else {
+        Box(
+            modifier = modifier
+                .size(200.dp)
+                .clip(CircleShape)
+                .clickable {
+                    launcher.launch("image/*")
+                }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Selected Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+            )
         }
-    )
+    }
 }
 
 @Composable

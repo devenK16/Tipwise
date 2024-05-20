@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,7 +75,7 @@ fun FeedScreen(
         floatingActionButton = {
             FloatingActionButton(
                 shape = FloatingActionButtonDefaults.shape,
-                modifier = Modifier.padding(bottom = 10.dp , end = 10.dp),
+                modifier = Modifier.padding(bottom = 10.dp, end = 10.dp),
                 containerColor = PacificBridge,
                 contentColor = Color.White,
                 onClick = { navController.navigate("add_worker") }
@@ -81,17 +84,28 @@ fun FeedScreen(
             }
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it)
-        ) {
-            itemsIndexed(workers) { index, worker ->
-                WorkerItem(
-                    worker = worker,
-                    onWorkerClick = { navController.navigate("add_worker/${worker._id}") }
-                )
-            }
+        Column(
+            modifier = Modifier
+                .padding(it)
+        ){
+            Text(
+                text = "Your valuable team!",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(12.dp)
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2)
+            ) {
+                items(workers) { worker ->
+                    WorkerItem(
+                        worker = worker,
+                        onWorkerClick = { navController.navigate("add_worker/${worker._id}") }
+                    )
+                }
 
+            }
         }
+
 
 //        Column(
 //            modifier = Modifier.padding(it)
@@ -113,14 +127,14 @@ fun WorkerItem(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .size(200.dp)
             .padding(10.dp)
             .clickable { onWorkerClick() },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -135,12 +149,14 @@ fun WorkerItem(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(140.dp)
                         .clip(RoundedCornerShape(8.dp))
                 )
             }
-            Text(text = worker.name, style = MaterialTheme.typography.bodyLarge)
-            Text(text = worker.profession, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = worker.name,
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

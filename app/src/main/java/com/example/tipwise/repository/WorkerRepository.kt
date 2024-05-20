@@ -1,13 +1,20 @@
 package com.example.tipwise.repository
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tipwise.api.WorkersAPI
 import com.example.tipwise.models.WorkerRequest
 import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.utils.NetworkResult
+import com.google.firebase.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.storage
+import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 import retrofit2.Response
+import java.util.UUID
 import javax.inject.Inject
 
 class WorkerRepository @Inject constructor( private val workersAPI: WorkersAPI ) {
@@ -18,6 +25,7 @@ class WorkerRepository @Inject constructor( private val workersAPI: WorkersAPI )
     private val _statusLiveData = MutableLiveData<NetworkResult<String>>()
     val statusLiveData : LiveData<NetworkResult<String>>
         get() = _statusLiveData
+    private val storageReference = Firebase.storage.reference
 
     suspend fun getWorkers() {
         _workerLiveData.postValue(NetworkResult.Loading())
@@ -57,6 +65,27 @@ class WorkerRepository @Inject constructor( private val workersAPI: WorkersAPI )
         handleWorkerResponse(response)
     }
 
+//    suspend fun uploadImageToFirebase(uri: Uri?, onComplete: (String) -> Unit){
+//        if( uri == null ){
+//            onComplete("https://placehold.co/600x400?text=.&font=Raleway")
+//            return
+//        }
+//        val storageRef: StorageReference = FirebaseStorage.getInstance().reference
+//        val imageRef: StorageReference = storageRef.child("images/${uri.lastPathSegment}")
+//        val uploadTask = imageRef.putFile(uri)
+//
+//        uploadTask.addOnSuccessListener {
+//            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+//                onComplete(downloadUri.toString())
+//            }
+//        }.addOnFailureListener {
+//            // Handle unsuccessful uploads
+//            it.printStackTrace()
+//            onComplete("https://placehold.co/600x400?text=.&font=Raleway") // Return default URL on failure
+//        }
+//
+//    }
+
     private fun handleResponse(response: Response<WorkerResponse> , message: String ) {
         if (response.isSuccessful && response.body() != null) {
             _statusLiveData.postValue(NetworkResult.Success(message))
@@ -72,4 +101,5 @@ class WorkerRepository @Inject constructor( private val workersAPI: WorkersAPI )
             _workerLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
     }
+
 }

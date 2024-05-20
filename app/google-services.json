@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "286543708060",
+    "project_id": "tipzonn-images",
+    "storage_bucket": "tipzonn-images.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286543708060:android:dcf5366a420783d0841259",
+        "android_client_info": {
+          "package_name": "com.example.tipwise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMBappujnwj-gOWViRjB2l5yqQGEmDFNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

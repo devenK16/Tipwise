@@ -41,15 +41,24 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 val profileSetupManager = ProfileSetupManager(this)
+                var start = "home"
+                if (tokenManager.getToken() != null) {
+                    if (profileSetupManager.isProfileSetupCompleted() ){
+                        start = "home"
+                    } else {
+                        start = "profile"
+                    }
+                } else{
+                    start = "signup"
+                }
 
                 NavHost(
                     navController = navController,
-                    startDestination = "signup"
+                    startDestination = start
                 ) {
                     composable("login") {
                         LoginScreen(
                             navController = navController, tokenManager = tokenManager,
-
                             profileSetupManager = profileSetupManager
                         )
                     }

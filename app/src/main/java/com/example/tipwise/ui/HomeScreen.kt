@@ -56,9 +56,9 @@ fun HomeScreen(navController: NavHostController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Tipwise",
+                        text = "Tipzonn",
                         color = PacificBridge,
-                        fontSize = 18.sp
+                        fontSize = 28.sp
                     )
                 },
                 modifier = Modifier.shadow(2.dp),
