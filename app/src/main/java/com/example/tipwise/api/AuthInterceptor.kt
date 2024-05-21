@@ -1,6 +1,7 @@
 package com.example.tipwise.api
 
 import com.example.tipwise.utils.TokenManager
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

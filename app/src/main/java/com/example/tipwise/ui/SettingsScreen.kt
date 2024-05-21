@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.example.tipwise.R
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.ui.user.AuthViewModel
+import com.example.tipwise.utils.TokenManager
 
 @Composable
 fun SettingsScreen(
@@ -45,8 +46,8 @@ fun SettingsScreen(
 ) {
     Column {
         ProfileCardUI(navController)
-        GeneralUI()
-        SupportOptionsUI()
+        GeneralUI(navController)
+        SupportOptionsUI(navController)
     }
 
 }
@@ -72,12 +73,12 @@ fun ProfileCardUI(navController: NavHostController) {
                     fontWeight = FontWeight.Bold,
                 )
 
-                Text(
-                    text = "UI.Stack.YT@gmail.com",
-                    color = Color.Gray,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
+//                Text(
+//                    text = "UI.Stack.YT@gmail.com",
+//                    color = Color.Gray,
+//                    fontSize = 10.sp,
+//                    fontWeight = FontWeight.SemiBold,
+//                )
 
                 Button(
                     modifier = Modifier.padding(top = 10.dp),
@@ -110,7 +111,10 @@ fun ProfileCardUI(navController: NavHostController) {
 }
 
 @Composable
-fun GeneralUI() {
+fun GeneralUI(navController: NavHostController) {
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .padding(horizontal = 14.dp)
@@ -127,13 +131,13 @@ fun GeneralUI() {
         SupportItem(
             icon = R.drawable.ic_logout,
             mainText = "Log Out",
-            onClick = {}
+            onClick = { logOut( context , navController) }
         )
     }
 }
 
 @Composable
-fun SupportOptionsUI() {
+fun SupportOptionsUI(navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -152,12 +156,12 @@ fun SupportOptionsUI() {
         SupportItem(
             icon = R.drawable.ic_whatsapp,
             mainText = "Contact",
-            onClick = { openWhatsApp(context, "9284506907") }
+            onClick = { openWhatsApp(context, "9322136520") }
         )
         SupportItem(
             icon = R.drawable.ic_mail,
             mainText = "Feedback",
-            onClick = { openEmail(context, "devenkhobragade007@gmail.com") }
+            onClick = { openEmail(context, "tipzonn@gmail.com") }
         )
         SupportItem(
             icon = R.drawable.ic_authenticaiton,
@@ -234,4 +238,17 @@ fun openEmail(context: Context, email: String) {
         putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
     }
     startActivity(context, intent, null)
+}
+
+fun logOut(context: Context  , navController: NavHostController){
+    // Clear the user token
+    val tokenManager = TokenManager(context)
+    tokenManager.saveToken(null)
+
+    // Navigate to the login screen
+    navController.navigate("login") {
+        popUpTo(navController.graph.startDestinationId) {
+            inclusive = true
+        }
+    }
 }

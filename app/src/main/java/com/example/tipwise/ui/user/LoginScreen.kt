@@ -1,6 +1,8 @@
 package com.example.tipwise.ui.user
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -149,7 +152,7 @@ fun LoginScreen(
             onClick = {
                 val (isValid, message) = viewModel.validateCredentials("", email, password, true)
                 if (isValid) {
-                    viewModel.loginUser(UserRequest("", email, password))
+                    viewModel.loginUser(UserRequest(email, "", password , "" , ""))
                 } else {
                     errorMessage = message
                 }
@@ -183,24 +186,29 @@ fun LoginScreen(
         }
     }
 
-    when (val userResponse = userResponseLiveData) {
-        is NetworkResult.Success -> {
-            tokenManager.saveToken(userResponse.data!!.token)
-            navController.navigate("home")
-//            if (profileSetupManager.isProfileSetupCompleted()) {
-//                navController.navigate("home")
-//            } else {
-//                navController.navigate("profile")
-//            }
-        }
-        is NetworkResult.Error -> {
-            errorMessage = userResponse.message.toString()
-        }
-        is NetworkResult.Loading -> {
-            // Show loading indicator
-        }
-        else -> {
-            // Do nothing
+    LaunchedEffect(userResponseLiveData) {
+        when (val userResponse = userResponseLiveData) {
+            is NetworkResult.Success -> {
+                viewModel.saveToken(userResponse.data!!.token)
+                viewModel.saveUserId(userResponse.data.user._id)
+                Log.d("LoginUserID" , userResponse.data.user._id)
+                navController.navigate("home")
+            }
+            is NetworkResult.Error -> {
+                errorMessage = userResponse.message ?: "An unknown error occurred"
+            }
+            is NetworkResult.Loading -> {
+//                Box(
+//                    modifier = Modifier.fillMaxSize(),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    CircularProgressIndicator()
+//                }
+            }
+            else -> {
+                // Do nothing
+            }
         }
     }
+
 }

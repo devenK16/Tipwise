@@ -4,13 +4,17 @@ import android.content.Context
 import com.example.tipwise.utils.Constants.PREFS_TOKEN_FILE
 import com.example.tipwise.utils.Constants.USER_TOKEN
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokenManager @Inject constructor(@ApplicationContext context: Context) {
 
     private var prefs = context.getSharedPreferences(PREFS_TOKEN_FILE, Context.MODE_PRIVATE)
 
-    fun saveToken(token: String) {
+    fun saveToken(token: String?) {
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()

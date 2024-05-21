@@ -88,11 +88,6 @@ fun FeedScreen(
             modifier = Modifier
                 .padding(it)
         ){
-            Text(
-                text = "Your valuable team!",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(12.dp)
-            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2)
             ) {
@@ -105,16 +100,6 @@ fun FeedScreen(
 
             }
         }
-
-
-//        Column(
-//            modifier = Modifier.padding(it)
-//        ) {
-//            WorkerItem(
-//                worker = tempWorker,
-//                onWorkerClick = { navController.navigate("add_worker/${tempWorker._id}") }
-//            )
-//        }
 
 
     }

@@ -1,15 +1,14 @@
 package com.example.tipwise
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,6 +24,7 @@ import com.example.tipwise.utils.ProfileSetupManager
 import com.example.tipwise.utils.TokenManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var tokenManager: TokenManager
+
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,17 +43,16 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 val profileSetupManager = ProfileSetupManager(this)
-                var start = "home"
-                if (tokenManager.getToken() != null) {
-                    if (profileSetupManager.isProfileSetupCompleted() ){
-                        start = "home"
-                    } else {
-                        start = "profile"
-                    }
-                } else{
-                    start = "signup"
+                val token = tokenManager.getToken()
+                if (token != null) {
+                    Log.d("mainToken" , token)
                 }
-
+                var start = "home"
+                start = if ( token != null) {
+                    "home"
+                } else{
+                    "signup"
+                }
                 NavHost(
                     navController = navController,
                     startDestination = start
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         FeedScreen(navController = navController)
                     }
                     composable("home") {
-                        HomeScreen(navController = navController)
+                        HomeScreen(navController = navController , profileSetupManager = profileSetupManager)
                     }
                     composable("add_worker") {
                         AddWorkerScreen(navController = navController)
@@ -87,7 +88,6 @@ class MainActivity : ComponentActivity() {
                     composable("profile") {
                         ProfileScreen(
                             navController = navController,
-                            authToken = tokenManager.getToken(),
                             profileSetupManager = profileSetupManager
                         )
                     }
@@ -105,18 +105,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TipwiseTheme {
-        Greeting("Android")
-    }
-}
