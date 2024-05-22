@@ -58,6 +58,7 @@ fun SignupScreen(
     profileSetupManager: ProfileSetupManager
 ) {
     val userResponse by viewModel.userResponseLiveData.observeAsState()
+
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -86,7 +87,7 @@ fun SignupScreen(
                 isLoading = true
             }
             else -> {
-                // Do nothing
+                isLoading = false
             }
         }
     }
@@ -273,6 +274,17 @@ fun SignupScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
+        }
+    }
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = PacificBridge)
         }
     }
 }

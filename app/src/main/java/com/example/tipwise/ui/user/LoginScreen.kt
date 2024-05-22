@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -53,7 +54,7 @@ fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     navController: NavHostController,
     tokenManager: TokenManager,
-    profileSetupManager : ProfileSetupManager
+    profileSetupManager: ProfileSetupManager
 ) {
 
     val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
@@ -66,6 +67,7 @@ fun LoginScreen(
     else
         Icons.Filled.VisibilityOff
     var errorMessage by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -158,12 +160,15 @@ fun LoginScreen(
                 } else {
                     val email = if (isEmail) identifier else ""
                     val contactNumber = if (isContactNumber) identifier else ""
-                    Log.d("LoginEmail" , email)
-                    Log.d("LoginNumber" , contactNumber)
-                    Log.d("LoginPassword" , password)
-                    val (isValid, message) = viewModel.validateLoginCredentials(identifier, password)
+                    Log.d("LoginEmail", email)
+                    Log.d("LoginNumber", contactNumber)
+                    Log.d("LoginPassword", password)
+                    val (isValid, message) = viewModel.validateLoginCredentials(
+                        identifier,
+                        password
+                    )
                     if (isValid) {
-                        viewModel.loginUser(UserLoginRequest(identifier,password))
+                        viewModel.loginUser(UserLoginRequest(identifier, password))
                     } else {
                         errorMessage = message
                     }
@@ -194,32 +199,46 @@ fun LoginScreen(
             Text(
                 text = "Don't have an account? Register Now",
                 color = PacificBridge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
             )
+        }
+
+    }
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = PacificBridge)
         }
     }
 
     LaunchedEffect(userResponseLiveData) {
         when (val userResponse = userResponseLiveData) {
             is NetworkResult.Success -> {
+                isLoading = false
                 viewModel.saveToken(userResponse.data!!.token)
                 viewModel.saveUserId(userResponse.data.user._id)
-                Log.d("LoginUserID" , userResponse.data.user._id)
+                Log.d("LoginUserID", userResponse.data.user._id)
                 navController.navigate("home")
             }
+
             is NetworkResult.Error -> {
+                isLoading = false
                 errorMessage = userResponse.message ?: "An unknown error occurred"
             }
+
             is NetworkResult.Loading -> {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    CircularProgressIndicator()
-//                }
+                isLoading = true
             }
+
             else -> {
-                // Do nothing
+                isLoading = false
             }
         }
     }
