@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -41,10 +42,8 @@ import com.example.tipwise.utils.ProfileSetupManager
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    viewModel: AuthViewModel = hiltViewModel(),
-    profileSetupManager: ProfileSetupManager
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
     val userLiveData by viewModel.userLiveData.observeAsState()
 
     // Get the user ID from the AuthViewModel
@@ -84,7 +83,7 @@ fun ProfileScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text(text = "Email") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PacificBridge,
                 unfocusedBorderColor =  Color.Black,
                 focusedLabelColor = PacificBridge,
@@ -106,7 +105,7 @@ fun ProfileScreen(
             value = restaurantName,
             onValueChange = { restaurantName = it },
             label = { Text(text = "Restaurant Name") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PacificBridge,
                 unfocusedBorderColor =  Color.Black,
                 focusedLabelColor = PacificBridge,
@@ -128,7 +127,7 @@ fun ProfileScreen(
             value = address,
             onValueChange = { address = it },
             label = { Text(text = "Address") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PacificBridge,
                 unfocusedBorderColor =  Color.Black,
                 focusedLabelColor = PacificBridge,
@@ -150,7 +149,7 @@ fun ProfileScreen(
             value = contactNumber,
             onValueChange = { contactNumber = it },
             label = { Text(text = "Contact Number") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PacificBridge,
                 unfocusedBorderColor =  Color.Black,
                 focusedLabelColor = PacificBridge,

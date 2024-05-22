@@ -45,12 +45,12 @@ class MainActivity : ComponentActivity() {
                 val profileSetupManager = ProfileSetupManager(this)
                 val token = tokenManager.getToken()
                 if (token != null) {
-                    Log.d("mainToken" , token)
+                    Log.d("mainToken", token)
                 }
                 var start = "home"
-                start = if ( token != null) {
+                start = if (token != null) {
                     "home"
-                } else{
+                } else {
                     "signup"
                 }
                 NavHost(
@@ -59,21 +59,19 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable("login") {
                         LoginScreen(
-                            navController = navController, tokenManager = tokenManager,
-                            profileSetupManager = profileSetupManager
+                            navController = navController
                         )
                     }
                     composable("signup") {
                         SignupScreen(
-                            navController = navController, tokenManager = tokenManager,
-                            profileSetupManager = profileSetupManager
+                            navController = navController
                         )
                     }
                     composable("feed") {
                         FeedScreen(navController = navController)
                     }
                     composable("home") {
-                        HomeScreen(navController = navController , profileSetupManager = profileSetupManager)
+                        HomeScreen(navController = navController)
                     }
                     composable("add_worker") {
                         AddWorkerScreen(navController = navController)
@@ -87,8 +85,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("profile") {
                         ProfileScreen(
-                            navController = navController,
-                            profileSetupManager = profileSetupManager
+                            navController = navController
                         )
                     }
                 }

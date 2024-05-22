@@ -54,8 +54,6 @@ import com.example.tipwise.utils.TokenManager
 fun SignupScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     navController: NavHostController,
-    tokenManager: TokenManager,
-    profileSetupManager: ProfileSetupManager
 ) {
     val userResponse by viewModel.userResponseLiveData.observeAsState()
 

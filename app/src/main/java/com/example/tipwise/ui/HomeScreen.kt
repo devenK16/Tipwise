@@ -45,8 +45,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
-    profileSetupManager: ProfileSetupManager
+    navController: NavHostController
 ) {
 
     val bottomNavController = rememberNavController()

@@ -52,9 +52,7 @@ import com.example.tipwise.utils.TokenManager
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    navController: NavHostController,
-    tokenManager: TokenManager,
-    profileSetupManager: ProfileSetupManager
+    navController: NavHostController
 ) {
 
     val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
