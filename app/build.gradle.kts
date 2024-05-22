@@ -96,7 +96,7 @@ dependencies {
     // System ui controller
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
-    implementation( "androidx.compose.material:material:1.6.7")
+//    implementation( "androidx.compose.material:material:1.6.7")
 
     implementation( "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")

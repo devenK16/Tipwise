@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 val navController = rememberNavController()
 
-                val profileSetupManager = ProfileSetupManager(this)
                 val token = tokenManager.getToken()
                 if (token != null) {
                     Log.d("mainToken", token)

@@ -50,7 +50,6 @@ fun HomeScreen(
 
     val bottomNavController = rememberNavController()
 
-    val viewModel: AuthViewModel = hiltViewModel()
 
     Scaffold(
         bottomBar = {
@@ -68,7 +67,7 @@ fun HomeScreen(
                     )
                 },
                 modifier = Modifier.shadow(2.dp),
-                colors = TopAppBarDefaults.smallTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     Color.White
                 )
             )

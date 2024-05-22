@@ -11,15 +11,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,13 +43,12 @@ import com.example.tipwise.utils.TokenManager
 
 @Composable
 fun SettingsScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
     Column {
         ProfileCardUI(navController)
         GeneralUI(navController)
-        SupportOptionsUI(navController)
+        SupportOptionsUI()
     }
 
 }
@@ -59,14 +60,20 @@ fun ProfileCardUI(navController: NavHostController) {
             .fillMaxWidth()
             .height(150.dp)
             .padding(10.dp),
-        backgroundColor = Color.White,
-        elevation = 0.dp
+        colors = CardDefaults.cardColors(Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column() {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Text(
                     text = "Check Your Profile",
                     fontSize = 16.sp,
@@ -87,11 +94,11 @@ fun ProfileCardUI(navController: NavHostController) {
                         navController.navigate("profile")
                     },
                     contentPadding = PaddingValues(horizontal = 30.dp),
-                    elevation = ButtonDefaults.elevation(
+                    elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 2.dp
                     ),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = PacificBridge)
+                    colors = ButtonDefaults.buttonColors(containerColor = PacificBridge)
                 ) {
                     Text(
                         text = "Update",
@@ -101,6 +108,7 @@ fun ProfileCardUI(navController: NavHostController) {
                     )
                 }
             }
+
             Image(
                 painter = painterResource(id = R.drawable.ic_profile_card_image),
                 contentDescription = "",
@@ -137,7 +145,7 @@ fun GeneralUI(navController: NavHostController) {
 }
 
 @Composable
-fun SupportOptionsUI(navController: NavHostController) {
+fun SupportOptionsUI() {
 
     val context = LocalContext.current
 
@@ -176,19 +184,24 @@ fun SupportOptionsUI(navController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupportItem(icon: Int, mainText: String, onClick: () -> Unit) {
     Card(
         onClick = { onClick() },
-        backgroundColor = Color.White,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
         modifier = Modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth(),
-        elevation = 0.dp,
+        elevation = CardDefaults.cardElevation(2.dp),
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 14.dp),
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 14.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
