@@ -112,4 +112,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-firestore")
 
+    // compressor
+    implementation("id.zelory:compressor:3.0.1")
+
 }

@@ -1,5 +1,6 @@
 package com.example.tipwise.ui.worker
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -48,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
@@ -56,6 +58,15 @@ import com.example.tipwise.models.WorkerRequest
 import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.utils.NetworkResult
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.invoke
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,45 +87,7 @@ fun AddWorkerScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageUrl1 by remember { mutableStateOf("") }
 
-    // Handle form submission
-    fun handleFormSubmission() {
-        viewModel.uploadImageToFirebase(imageUri) { imageUrl ->
-            Log.d("ImageUrl" , imageUrl)
-            val workerRequest = WorkerRequest(
-                name = name,
-                profession = profession,
-                bankAccountName = bankAccountName,
-                bankAccountNumber = bankAccountNumber,
-                ifscCode = ifscCode,
-                photo = imageUrl,
-                upiId = upiId
-            )
-            if (workerId != null) {
-                viewModel.updateWorker(workerRequest, workerId)
-            } else {
-                viewModel.createWorkers(workerRequest)
-            }
-            navController.navigateUp()
-        }
-    }
-
-    fun saveWorker(imageUrl: String) {
-        val workerRequest = WorkerRequest(
-            name = name,
-            profession = profession,
-            bankAccountName = bankAccountName,
-            bankAccountNumber = bankAccountNumber,
-            ifscCode = ifscCode,
-            photo = imageUrl1,
-            upiId = upiId
-        )
-        if (workerId != null) {
-            viewModel.updateWorker(workerRequest, workerId)
-        } else {
-            viewModel.createWorkers(workerRequest)
-        }
-        navController.navigateUp()
-    }
+    val context = LocalContext.current
 
     // Fetch worker data if workerId is provided
     LaunchedEffect(workerId) {
@@ -137,6 +110,86 @@ fun AddWorkerScreen(
             }
         }
     }
+
+    fun copyUriToFile(context: Context, uri: Uri): File {
+        val destinationFile = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
+        context.contentResolver.openInputStream(uri).use { inputStream ->
+            FileOutputStream(destinationFile).use { outputStream ->
+                inputStream?.copyTo(outputStream)
+            }
+        }
+        return destinationFile
+    }
+
+    suspend fun compressImage(context: Context, uri: Uri): Uri {
+        return withContext(Dispatchers.IO) {
+            val actualImageFile = copyUriToFile(context, uri)
+            val compressedImageFile = Compressor.compress(context, actualImageFile) {
+                default()
+            }
+            Uri.fromFile(compressedImageFile)
+        }
+    }
+
+
+    fun saveWorker(imageUrl: String) {
+        val workerRequest = WorkerRequest(
+            name = name,
+            profession = profession,
+            bankAccountName = bankAccountName,
+            bankAccountNumber = bankAccountNumber,
+            ifscCode = ifscCode,
+            photo = imageUrl,
+            upiId = upiId
+        )
+        if (workerId != null) {
+            viewModel.updateWorker(workerRequest, workerId)
+        } else {
+            viewModel.createWorkers(workerRequest)
+        }
+        navController.navigateUp()
+    }
+
+    // Handle form submission
+    fun handleFormSubmission() {
+        if (imageUri != null) {
+            viewModel.viewModelScope.launch {
+                val compressedUri = compressImage(context, imageUri!!)
+                viewModel.uploadImageToFirebase(compressedUri) { imageUrl ->
+                    saveWorker(imageUrl)
+                }
+            }
+        } else {
+            saveWorker(imageUrl1)
+        }
+    }
+
+//    fun saveWorker(imageUrl: String) {
+//        val workerRequest = WorkerRequest(
+//            name = name,
+//            profession = profession,
+//            bankAccountName = bankAccountName,
+//            bankAccountNumber = bankAccountNumber,
+//            ifscCode = ifscCode,
+//            photo = imageUrl,
+//            upiId = upiId
+//        )
+//        if (workerId != null) {
+//            viewModel.updateWorker(workerRequest, workerId)
+//        } else {
+//            viewModel.createWorkers(workerRequest)
+//        }
+//        navController.navigateUp()
+//    }
+//    suspend fun compressImage(context: Context, uri: Uri): Uri {
+//        return withContext(Dispatchers.IO) {
+//            val actualImageFile = File(uri.path!!)
+//            val compressedImageFile = Compressor.compress(context, actualImageFile) {
+//                default()
+//            }
+//            Uri.fromFile(compressedImageFile)
+//        }
+//    }
 
     Scaffold(
         topBar = {
