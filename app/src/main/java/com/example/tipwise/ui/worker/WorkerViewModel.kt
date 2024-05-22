@@ -9,6 +9,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +29,12 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
         }
     }
 
-    fun deleteWorker(workerId: String){
+    fun deleteWorker(workerId: String , imageUrl: String? = null){
         viewModelScope.launch {
             workerRepository.deleteWorker(workerId)
+            imageUrl?.let {
+                deleteImageFromFirebase(it)
+            }
         }
     }
 
@@ -40,9 +44,12 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
         }
     }
 
-    fun updateWorker(workerRequest: WorkerRequest , workerId: String){
+    fun updateWorker(workerRequest: WorkerRequest , workerId: String , oldImageUrl: String? = null){
         viewModelScope.launch {
             workerRepository.updateWorker(workerRequest, workerId)
+            oldImageUrl?.takeIf { workerRequest.photo != it }?.let {
+                deleteImageFromFirebase(it)
+            }
         }
     }
 
@@ -52,25 +59,49 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
 //        }
 //    }
 
-    fun uploadImageToFirebase(uri: Uri?, onComplete: (String) -> Unit){
-        if( uri == null ){
-            onComplete("https://placehold.co/600x400?text=.&font=Raleway")
-            return
-        }
+//    fun uploadImageToFirebase(uri: Uri?, onComplete: (String) -> Unit){
+//        if( uri == null ){
+//            onComplete("https://placehold.co/600x400?text=.&font=Raleway")
+//            return
+//        }
+//        val storageRef: StorageReference = FirebaseStorage.getInstance().reference
+//        val imageRef: StorageReference = storageRef.child("images/${uri.lastPathSegment}")
+//        val uploadTask = imageRef.putFile(uri)
+//
+//        uploadTask.addOnSuccessListener {
+//            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+//                onComplete(downloadUri.toString())
+//            }
+//        }.addOnFailureListener {
+//            // Handle unsuccessful uploads
+//            it.printStackTrace()
+//            onComplete("https://placehold.co/600x400?text=.&font=Raleway") // Return default URL on failure
+//        }
+//
+//    }
+
+    suspend fun uploadImageToFirebase(uri: Uri?): String? {
+        if (uri == null) return null
+
         val storageRef: StorageReference = FirebaseStorage.getInstance().reference
         val imageRef: StorageReference = storageRef.child("images/${uri.lastPathSegment}")
         val uploadTask = imageRef.putFile(uri)
 
-        uploadTask.addOnSuccessListener {
-            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                onComplete(downloadUri.toString())
-            }
-        }.addOnFailureListener {
-            // Handle unsuccessful uploads
-            it.printStackTrace()
-            onComplete("https://placehold.co/600x400?text=.&font=Raleway") // Return default URL on failure
+        return try {
+            val result = uploadTask.await()
+            imageRef.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
+    }
 
+    private fun deleteImageFromFirebase(imageUrl: String) {
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+        storageRef.delete().addOnFailureListener {
+            // Log error if needed
+            println("Error deleting image: $it")
+        }
     }
 
 }

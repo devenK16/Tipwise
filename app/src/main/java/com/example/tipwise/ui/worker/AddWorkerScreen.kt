@@ -86,6 +86,7 @@ fun AddWorkerScreen(
     var ifscCode by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageUrl1 by remember { mutableStateOf("") }
+    var oldImageUrl by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -113,9 +114,9 @@ fun AddWorkerScreen(
 
     fun copyUriToFile(context: Context, uri: Uri): File {
         val destinationFile = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
-        context.contentResolver.openInputStream(uri).use { inputStream ->
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
             FileOutputStream(destinationFile).use { outputStream ->
-                inputStream?.copyTo(outputStream)
+                inputStream.copyTo(outputStream)
             }
         }
         return destinationFile
@@ -152,17 +153,52 @@ fun AddWorkerScreen(
 
     // Handle form submission
     fun handleFormSubmission() {
-        if (imageUri != null) {
-            viewModel.viewModelScope.launch {
+        viewModel.viewModelScope.launch {
+            val newImageUrl: String? = if (imageUri != null) {
                 val compressedUri = compressImage(context, imageUri!!)
-                viewModel.uploadImageToFirebase(compressedUri) { imageUrl ->
-                    saveWorker(imageUrl)
-                }
+                viewModel.uploadImageToFirebase(compressedUri)
+            } else {
+                null
             }
-        } else {
-            saveWorker(imageUrl1)
+
+            if (workerId != null) {
+                if (newImageUrl != null && newImageUrl != imageUrl1) {
+                    viewModel.updateWorker(
+                        WorkerRequest(
+                            name = name,
+                            profession = profession,
+                            bankAccountName = bankAccountName,
+                            bankAccountNumber = bankAccountNumber,
+                            ifscCode = ifscCode,
+                            photo = newImageUrl,
+                            upiId = upiId
+                        ),
+                        workerId,
+                        oldImageUrl = imageUrl1
+                    )
+
+                    navController.navigateUp()
+                } else {
+                    viewModel.updateWorker(
+                        WorkerRequest(
+                            name = name,
+                            profession = profession,
+                            bankAccountName = bankAccountName,
+                            bankAccountNumber = bankAccountNumber,
+                            ifscCode = ifscCode,
+                            photo = imageUrl1,
+                            upiId = upiId
+                        ),
+                        workerId
+                    )
+                    navController.navigateUp()
+                }
+            } else {
+                saveWorker(newImageUrl ?: imageUrl1)
+            }
         }
     }
+
 
 //    fun saveWorker(imageUrl: String) {
 //        val workerRequest = WorkerRequest(
@@ -386,7 +422,7 @@ fun AddWorkerScreen(
                 if (workerId != null) {
                     Button(
                         onClick = {
-                            viewModel.deleteWorker(workerId)
+                            viewModel.deleteWorker(workerId , imageUrl1)
                             navController.navigateUp()
                         },
                         colors = ButtonDefaults.buttonColors(
