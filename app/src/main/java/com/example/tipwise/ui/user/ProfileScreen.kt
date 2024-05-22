@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserResponse
@@ -165,15 +167,21 @@ fun ProfileScreen(
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
         Button(
             onClick = {
                 navController.navigate("home")
             },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = PacificBridge
+            ),
             modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 10.dp)
         ) {
-            Text(text = "Continue")
+            Text(text = "Continue",
+                fontSize = 20.sp,
+                color = Color.White)
         }
     }
 
