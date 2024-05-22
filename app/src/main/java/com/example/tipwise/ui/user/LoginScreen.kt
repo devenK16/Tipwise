@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.tipwise.models.UserLoginRequest
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.utils.NetworkResult
@@ -57,7 +58,7 @@ fun LoginScreen(
 
     val userResponseLiveData by viewModel.userResponseLiveData.observeAsState()
 
-    var email by remember { mutableStateOf("") }
+    var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val icon = if (passwordVisible)
@@ -91,9 +92,9 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(48.dp))
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
+            value = identifier,
+            onValueChange = { identifier = it },
+            label = { Text("Email or Contact Number") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = PacificBridge,
                 unfocusedBorderColor = Color.Black,
@@ -150,12 +151,24 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(44.dp))
         Button(
             onClick = {
-                val (isValid, message) = viewModel.validateCredentials("", email, password, true)
-                if (isValid) {
-                    viewModel.loginUser(UserRequest(email, "", password , "" , ""))
+                val isEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(identifier).matches()
+                val isContactNumber = identifier.length == 10 && identifier.all { it.isDigit() }
+                if (!isEmail && !isContactNumber) {
+                    errorMessage = "Please enter a valid email or mobile number"
                 } else {
-                    errorMessage = message
+                    val email = if (isEmail) identifier else ""
+                    val contactNumber = if (isContactNumber) identifier else ""
+                    Log.d("LoginEmail" , email)
+                    Log.d("LoginNumber" , contactNumber)
+                    Log.d("LoginPassword" , password)
+                    val (isValid, message) = viewModel.validateLoginCredentials(identifier, password)
+                    if (isValid) {
+                        viewModel.loginUser(UserLoginRequest(identifier,password))
+                    } else {
+                        errorMessage = message
+                    }
                 }
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = PacificBridge

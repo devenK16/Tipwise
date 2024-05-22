@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tipwise.api.UsersAPI
 import com.example.tipwise.models.User
+import com.example.tipwise.models.UserLoginRequest
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.models.UserResponse
 import com.example.tipwise.utils.NetworkResult
@@ -34,9 +35,9 @@ class UserRepository @Inject constructor(private val usersAPI: UsersAPI) {
         }
     }
 
-    suspend fun loginUser(userRequest: UserRequest) {
+    suspend fun loginUser(userLoginRequest: UserLoginRequest) {
         _userResponseLiveData.postValue(NetworkResult.Loading())
-        val response = usersAPI.signIn(userRequest)
+        val response = usersAPI.signIn(userLoginRequest)
         handleResponse(response)
     }
 

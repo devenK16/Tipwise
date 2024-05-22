@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tipwise.models.User
+import com.example.tipwise.models.UserLoginRequest
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.models.UserResponse
 import com.example.tipwise.repository.UserRepository
@@ -42,9 +43,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun loginUser(userRequest: UserRequest) {
+    fun loginUser(userLoginRequest: UserLoginRequest) {
         viewModelScope.launch {
-            userRepository.loginUser(userRequest)
+            userRepository.loginUser(userLoginRequest)
         }
     }
 
@@ -97,5 +98,16 @@ class AuthViewModel @Inject constructor(
             result = Pair(false, "Please enter a valid contact number")
         }
         return result
+    }
+
+    fun validateLoginCredentials(identifier: String, password: String): Pair<Boolean, String> {
+        if (identifier.isBlank() || password.isBlank()) {
+            return Pair(false, "Please provide the credentials")
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(identifier).matches() && !Patterns.PHONE.matcher(identifier).matches()) {
+            return Pair(false, "Please provide a valid email or phone number")
+        } else if (password.length <= 5) {
+            return Pair(false, "Password length should be greater than 5")
+        }
+        return Pair(true, "")
     }
 }

@@ -1,6 +1,7 @@
 package com.example.tipwise.api
 
 import com.example.tipwise.models.User
+import com.example.tipwise.models.UserLoginRequest
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.models.UserResponse
 import retrofit2.Response
@@ -15,7 +16,7 @@ interface UsersAPI {
     suspend fun signUp(@Body userRequest: UserRequest): Response<UserResponse>
 
     @POST("api/auth/signin")
-    suspend fun signIn(@Body userRequest: UserRequest): Response<UserResponse>
+    suspend fun signIn(@Body userLoginRequest: UserLoginRequest): Response<UserResponse>
     @GET("api/users/{userId}")
     suspend fun getUser( @Path("userId") userId : String) : Response<User>
 
