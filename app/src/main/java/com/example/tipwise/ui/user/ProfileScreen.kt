@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,10 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.tipwise.models.UserRequest
 import com.example.tipwise.models.UserResponse
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.utils.NetworkResult
@@ -67,7 +70,7 @@ fun ProfileScreen(
     var restaurantName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
-
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -160,22 +163,54 @@ fun ProfileScreen(
                 unfocusedTextColor = Color.Black,
                 cursorColor = PacificBridge
             ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
             singleLine = true
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(text = "Password") },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PacificBridge,
+                unfocusedBorderColor =  Color.Black,
+                focusedLabelColor = PacificBridge,
+                unfocusedLabelColor =  Color.Black,
+                focusedTrailingIconColor = PacificBridge,
+                unfocusedTrailingIconColor =  Color.Black,
+                focusedTextColor = PacificBridge,
+                unfocusedTextColor = Color.Black,
+                cursorColor = PacificBridge
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            singleLine = true
+        )
         Spacer(modifier = Modifier.height(36.dp))
 
         Button(
             onClick = {
+                val updatedUser = UserRequest(
+                    email = email,
+                    address = address,
+                    name = restaurantName,
+                    password = password,
+                    contactNumber = contactNumber
+                )
+                viewModel.updateUser(userId!! , updatedUser)
                 navController.navigate("home")
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = PacificBridge
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
             Text(text = "Continue",
@@ -193,6 +228,7 @@ fun ProfileScreen(
                     restaurantName = userData.name ?: ""
                     address = userData.address ?: ""
                     contactNumber = userData.contactNo ?: ""
+                    password = userData.password ?: ""
                 }
 
                 Log.d("ProfileUserIDTestEmail" , userResponse.data.toString() )

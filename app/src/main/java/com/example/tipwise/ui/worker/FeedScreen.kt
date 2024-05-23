@@ -112,19 +112,19 @@ fun WorkerItem(
 ) {
     Card(
         modifier = Modifier
-            .size(200.dp)
             .padding(10.dp)
             .clickable { onWorkerClick() },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(4.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 4.dp)
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
