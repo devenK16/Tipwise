@@ -1,5 +1,6 @@
 package com.example.tipwise.ui.user
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,15 +11,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,152 +79,153 @@ fun ProfileScreen(
     var contactNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Profile", style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = "Email") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = restaurantName,
-            onValueChange = { restaurantName = it },
-            label = { Text(text = "Restaurant Name") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = address,
-            onValueChange = { address = it },
-            label = { Text(text = "Address") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = contactNumber,
-            onValueChange = { contactNumber = it },
-            label = { Text(text = "Contact Number") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
-            ),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = "Password") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor =  Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor =  Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor =  Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(36.dp))
-
-        Button(
-            onClick = {
-                val updatedUser = UserRequest(
-                    email = email,
-                    address = address,
-                    name = restaurantName,
-                    password = password,
-                    contactNumber = contactNumber
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(
+                    text = "Profile",
+                    color = PacificBridge,
+                    fontSize = 28.sp
+                ) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                        navController.navigate("home")
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(text = "Email") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PacificBridge,
+                        unfocusedBorderColor = Color.Black,
+                        focusedLabelColor = PacificBridge,
+                        unfocusedLabelColor = Color.Black,
+                        focusedTrailingIconColor = PacificBridge,
+                        unfocusedTrailingIconColor = Color.Black,
+                        focusedTextColor = PacificBridge,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = PacificBridge
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
                 )
-                viewModel.updateUser(userId!! , updatedUser)
-                navController.navigate("home")
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PacificBridge
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        ) {
-            Text(text = "Continue",
-                fontSize = 20.sp,
-                color = Color.White)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = restaurantName,
+                    onValueChange = { restaurantName = it },
+                    label = { Text(text = "Restaurant Name") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PacificBridge,
+                        unfocusedBorderColor = Color.Black,
+                        focusedLabelColor = PacificBridge,
+                        unfocusedLabelColor = Color.Black,
+                        focusedTrailingIconColor = PacificBridge,
+                        unfocusedTrailingIconColor = Color.Black,
+                        focusedTextColor = PacificBridge,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = PacificBridge
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = address,
+                    onValueChange = { address = it },
+                    label = { Text(text = "Address") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PacificBridge,
+                        unfocusedBorderColor = Color.Black,
+                        focusedLabelColor = PacificBridge,
+                        unfocusedLabelColor = Color.Black,
+                        focusedTrailingIconColor = PacificBridge,
+                        unfocusedTrailingIconColor = Color.Black,
+                        focusedTextColor = PacificBridge,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = PacificBridge
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = contactNumber,
+                    onValueChange = { contactNumber = it },
+                    label = { Text(text = "Contact Number") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PacificBridge,
+                        unfocusedBorderColor = Color.Black,
+                        focusedLabelColor = PacificBridge,
+                        unfocusedLabelColor = Color.Black,
+                        focusedTrailingIconColor = PacificBridge,
+                        unfocusedTrailingIconColor = Color.Black,
+                        focusedTextColor = PacificBridge,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = PacificBridge
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Button(
+                    onClick = {
+                        val updatedUser = UserRequest(
+                            email = email,
+                            address = address,
+                            name = restaurantName,
+                            password = password,
+                            contactNumber = contactNumber
+                        )
+                        viewModel.updateUser(userId!!, updatedUser)
+                        navController.navigate("home")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PacificBridge
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
+                    Text(
+                        text = "Continue",
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
+            }
         }
-    }
+    )
+
+
 
     LaunchedEffect(userLiveData) {
         when (val userResponse = userLiveData) {

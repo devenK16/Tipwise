@@ -92,6 +92,11 @@ fun HomeScreen(
                         navController = navController
                     )
                 }
+                composable("profile"){
+                    ProfileScreen(
+                        navController = navController
+                    )
+                }
             }
         }
     }

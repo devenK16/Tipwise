@@ -169,17 +169,17 @@ fun SupportOptionsUI() {
         SupportItem(
             icon = R.drawable.ic_mail,
             mainText = "Feedback",
-            onClick = { openEmail(context, "tipzonn@gmail.com") }
+            onClick = { openEmail(context, "contact@tipzonn.com") }
         )
         SupportItem(
             icon = R.drawable.ic_authenticaiton,
             mainText = "Privacy Policy",
-            onClick = {}
+            onClick = { openWebsite(context , "https://www.tipzonn.com/privacy")  }
         )
         SupportItem(
             icon = R.drawable.ic_info,
             mainText = "About Us",
-            onClick = {}
+            onClick = { openWebsite(context , "https://www.tipzonn.com") }
         )
     }
 }
@@ -250,6 +250,11 @@ fun openEmail(context: Context, email: String) {
         data = Uri.parse("mailto:")
         putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
     }
+    startActivity(context, intent, null)
+}
+
+fun openWebsite(context: Context , websiteUrl : String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
     startActivity(context, intent, null)
 }
 
