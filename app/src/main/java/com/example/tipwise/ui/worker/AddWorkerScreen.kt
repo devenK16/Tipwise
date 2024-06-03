@@ -199,34 +199,6 @@ fun AddWorkerScreen(
         }
     }
 
-
-//    fun saveWorker(imageUrl: String) {
-//        val workerRequest = WorkerRequest(
-//            name = name,
-//            profession = profession,
-//            bankAccountName = bankAccountName,
-//            bankAccountNumber = bankAccountNumber,
-//            ifscCode = ifscCode,
-//            photo = imageUrl,
-//            upiId = upiId
-//        )
-//        if (workerId != null) {
-//            viewModel.updateWorker(workerRequest, workerId)
-//        } else {
-//            viewModel.createWorkers(workerRequest)
-//        }
-//        navController.navigateUp()
-//    }
-//    suspend fun compressImage(context: Context, uri: Uri): Uri {
-//        return withContext(Dispatchers.IO) {
-//            val actualImageFile = File(uri.path!!)
-//            val compressedImageFile = Compressor.compress(context, actualImageFile) {
-//                default()
-//            }
-//            Uri.fromFile(compressedImageFile)
-//        }
-//    }
-
     Scaffold(
         topBar = {
             TopAppBar(
