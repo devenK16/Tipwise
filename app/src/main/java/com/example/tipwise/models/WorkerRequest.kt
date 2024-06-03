@@ -7,5 +7,6 @@ data class WorkerRequest(
     val name: String,
     val photo: String,
     val profession: String,
-    val upiId: String
+    val upiId: String,
+    val contactNo: String
 )

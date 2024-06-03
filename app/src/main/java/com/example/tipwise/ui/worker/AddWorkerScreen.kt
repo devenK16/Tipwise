@@ -86,7 +86,14 @@ fun AddWorkerScreen(
     var ifscCode by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageUrl1 by remember { mutableStateOf("") }
+    var contactNo by remember { mutableStateOf("") }
     var oldImageUrl by remember { mutableStateOf("") }
+
+    // Initialize error state variables
+    var nameError by remember { mutableStateOf(false) }
+    var professionError by remember { mutableStateOf(false) }
+    var upiIdError by remember { mutableStateOf(false) }
+    var contactNoError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -108,6 +115,7 @@ fun AddWorkerScreen(
                 bankAccountNumber = worker.bankAccountNumber
                 ifscCode = worker.ifscCode
                 imageUrl1 = worker.photo
+                contactNo = worker.contactNo
             }
         }
     }
@@ -141,7 +149,8 @@ fun AddWorkerScreen(
             bankAccountNumber = bankAccountNumber,
             ifscCode = ifscCode,
             photo = imageUrl,
-            upiId = upiId
+            upiId = upiId,
+            contactNo = contactNo
         )
         if (workerId != null) {
             viewModel.updateWorker(workerRequest, workerId)
@@ -153,6 +162,16 @@ fun AddWorkerScreen(
 
     // Handle form submission
     fun handleFormSubmission() {
+        // Reset error states
+        nameError = name.isEmpty()
+        professionError = profession.isEmpty()
+        upiIdError = upiId.isEmpty()
+        contactNoError = contactNo.isEmpty()
+
+        if (nameError || professionError || upiIdError || contactNoError) {
+            return
+        }
+
         viewModel.viewModelScope.launch {
             val newImageUrl: String? = if (imageUri != null) {
                 val compressedUri = compressImage(context, imageUri!!)
@@ -171,7 +190,8 @@ fun AddWorkerScreen(
                             bankAccountNumber = bankAccountNumber,
                             ifscCode = ifscCode,
                             photo = newImageUrl,
-                            upiId = upiId
+                            upiId = upiId,
+                            contactNo = contactNo
                         ),
                         workerId,
                         oldImageUrl = imageUrl1
@@ -187,7 +207,8 @@ fun AddWorkerScreen(
                             bankAccountNumber = bankAccountNumber,
                             ifscCode = ifscCode,
                             photo = imageUrl1,
-                            upiId = upiId
+                            upiId = upiId,
+                            contactNo = contactNo
                         ),
                         workerId
                     )
@@ -253,6 +274,7 @@ fun AddWorkerScreen(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Name") },
+                isError = nameError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = PacificBridge,
                     unfocusedBorderColor = Color.Black,
@@ -268,11 +290,15 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
+            if (nameError) {
+                Text("Name cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
+            }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = profession,
                 onValueChange = { profession = it },
                 label = { Text("Profession") },
+                isError = professionError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = PacificBridge,
                     unfocusedBorderColor = Color.Black,
@@ -288,11 +314,15 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
+            if (professionError) {
+                Text("Profession cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
+            }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = upiId,
                 onValueChange = { upiId = it },
                 label = { Text("UPI ID") },
+                isError = upiIdError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = PacificBridge,
                     unfocusedBorderColor = Color.Black,
@@ -308,11 +338,15 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
+            if (upiIdError) {
+                Text("UPI ID cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
+            }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
-                value = bankAccountName,
-                onValueChange = { bankAccountName = it },
-                label = { Text("Bank Account Name") },
+                value = contactNo,
+                onValueChange = { contactNo = it },
+                label = { Text("Contact No.") },
+                isError = contactNoError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = PacificBridge,
                     unfocusedBorderColor = Color.Black,
@@ -328,46 +362,9 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = bankAccountNumber,
-                onValueChange = { bankAccountNumber = it },
-                label = { Text("Bank Account Number") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = ifscCode,
-                onValueChange = { ifscCode = it },
-                label = { Text("IFSC Code") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            )
+            if (contactNoError) {
+                Text("Contact No. cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
+            }
             Spacer(modifier = Modifier.height(44.dp))
 
             Row(

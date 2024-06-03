@@ -58,18 +58,18 @@ fun FeedScreen(
         viewModel.getWorkers()
     }
 
-    val tempWorker = WorkerResponse(
-        __v = 5559,
-        _id = "sea",
-        bankAccountName = "Kathie Cooper",
-        bankAccountNumber = "omittam",
-        ifscCode = "facilis",
-        name = "Nathan Arnold",
-        photo = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
-        profession = "latine",
-        upiId = "donec",
-        userId = "ubique"
-    )
+//    val tempWorker = WorkerResponse(
+//        __v = 5559,
+//        _id = "sea",
+//        bankAccountName = "Kathie Cooper",
+//        bankAccountNumber = "omittam",
+//        ifscCode = "facilis",
+//        name = "Nathan Arnold",
+//        photo = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+//        profession = "latine",
+//        upiId = "donec",
+//        userId = "ubique"
+//    )
 
     Scaffold(
         floatingActionButton = {

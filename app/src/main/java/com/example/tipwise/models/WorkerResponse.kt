@@ -10,5 +10,6 @@ data class WorkerResponse(
     val photo: String,
     val profession: String,
     val upiId: String,
-    val userId: String
+    val userId: String,
+    val contactNo: String
 )
