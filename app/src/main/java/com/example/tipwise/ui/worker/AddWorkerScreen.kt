@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -46,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,6 +90,7 @@ fun AddWorkerScreen(
     var imageUrl1 by remember { mutableStateOf("") }
     var contactNo by remember { mutableStateOf("") }
     var oldImageUrl by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     // Initialize error state variables
     var nameError by remember { mutableStateOf(false) }
@@ -290,9 +293,7 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
-            if (nameError) {
-                Text("Name cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = profession,
@@ -314,9 +315,7 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
-            if (professionError) {
-                Text("Profession cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = upiId,
@@ -338,9 +337,7 @@ fun AddWorkerScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
-            if (upiIdError) {
-                Text("UPI ID cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = contactNo,
@@ -358,13 +355,18 @@ fun AddWorkerScreen(
                     unfocusedTextColor = Color.Black,
                     cursorColor = PacificBridge
                 ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             )
-            if (contactNoError) {
-                Text("Contact No. cannot be empty", color = Color.Red, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
-            }
+            Text(
+                text = errorMessage,
+                modifier = Modifier
+                    .padding(start = 10.dp , end = 10.dp , top = 10.dp ),
+                color = Color.Red,
+                fontSize = 10.sp
+            )
             Spacer(modifier = Modifier.height(44.dp))
 
             Row(
@@ -373,7 +375,17 @@ fun AddWorkerScreen(
             ) {
                 Button(
                     onClick = {
-                        handleFormSubmission()
+                        val (isValid, message) = viewModel.validateCredentials(
+                            name ,
+                            upiId,
+                            contactNo
+                        )
+                        if( isValid  ){
+                            handleFormSubmission()
+                        }
+                        else {
+                            errorMessage = message
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PacificBridge

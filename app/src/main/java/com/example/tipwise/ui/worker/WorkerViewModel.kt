@@ -1,6 +1,7 @@
 package com.example.tipwise.ui.worker
 
 import android.net.Uri
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tipwise.models.WorkerRequest
@@ -102,6 +103,22 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
             // Log error if needed
             println("Error deleting image: $it")
         }
+    }
+
+    fun validateCredentials(
+        name: String,
+        upiId: String,
+        contactNumber: String
+    ): Pair<Boolean, String> {
+        var result = Pair(true, "")
+        if ( name.isEmpty() ) {
+            result = Pair(false, "Please provide the Name")
+        } else if ( upiId.isEmpty()) {
+            result = Pair(false, "Please enter a valid UPI ID")
+        } else if ( contactNumber.length != 10) {
+            result = Pair(false, "Please enter a valid contact number")
+        }
+        return result
     }
 
 }
