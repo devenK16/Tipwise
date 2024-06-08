@@ -45,6 +45,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
+import com.example.tipwise.ui.theme.TipzonnLightBackground
 
 @Composable
 fun FeedScreen(
@@ -76,13 +79,14 @@ fun FeedScreen(
             FloatingActionButton(
                 shape = FloatingActionButtonDefaults.shape,
                 modifier = Modifier.padding(bottom = 10.dp, end = 10.dp),
-                containerColor = PacificBridge,
+                containerColor = TipzonnLight,
                 contentColor = Color.White,
                 onClick = { navController.navigate("add_worker") }
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
             }
-        }
+        },
+        containerColor = Color.White
     ) {
         Column(
             modifier = Modifier
@@ -114,7 +118,10 @@ fun WorkerItem(
         modifier = Modifier
             .padding(10.dp)
             .clickable { onWorkerClick() },
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = TipzonnLightBackground // Change this to your desired color
+        )
     ) {
         Column(
             modifier = Modifier
@@ -140,7 +147,8 @@ fun WorkerItem(
             }
             Text(
                 text = worker.name,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = TipzonnBlack
             )
         }
     }
