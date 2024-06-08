@@ -156,13 +156,13 @@ fun BottomNavigationBar(
                         Icon(
                             imageVector = bottomItem.icon,
                             contentDescription = bottomItem.title,
-                            tint = if (selected.value == index) Color(0xFF00BFFF) else TipzonnBlack
+                            tint = if (selected.value == index) Color(0xFF5CE4E4) else TipzonnBlack
                         )
                     },
                     label = {
                         Text(
                             text = bottomItem.title,
-                            color = if (selected.value == index) Color(0xFF00BFFF) else TipzonnBlack
+                            color = if (selected.value == index) Color(0xFF5CE4E4) else TipzonnBlack
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
