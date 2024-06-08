@@ -11,3 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val PacificBridge = Color(0xFF0052CC)
+val TipzonnLight = Color(0xFF5CE4E4)
+val TipzonnDark = Color(0xFF00bfff)
+val TipzonnBlack = Color(0xFF324B4B)

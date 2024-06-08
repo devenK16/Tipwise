@@ -1,6 +1,8 @@
 package com.example.tipwise.ui
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -25,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.ui.user.AuthViewModel
 import com.example.tipwise.ui.user.ProfileScreen
 import com.example.tipwise.ui.worker.FeedScreen
@@ -62,8 +68,8 @@ fun HomeScreen(
                 title = {
                     Text(
                         text = "Tipzonn",
-                        color = PacificBridge,
-                        fontSize = 28.sp
+                        color = TipzonnBlack,
+                        fontSize = 24.sp
                     )
                 },
                 modifier = Modifier.shadow(2.dp),
@@ -71,12 +77,14 @@ fun HomeScreen(
                     Color.White
                 )
             )
-        }
+        },
+        containerColor = Color.White
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(it)
+                .background(color = Color.White)
         ) {
             NavHost(
                 navController = bottomNavController,
@@ -123,7 +131,8 @@ fun BottomNavigationBar(
 
     NavigationBar(
         containerColor = Color.White,
-        contentColor = Color.Black
+        contentColor = Color.Black,
+        modifier = Modifier.shadow(10.dp),
     ){
         Row {
             items.forEachIndexed { index, bottomItem ->
@@ -147,15 +156,22 @@ fun BottomNavigationBar(
                         Icon(
                             imageVector = bottomItem.icon,
                             contentDescription = bottomItem.title,
-                            tint = if (selected.value == index) PacificBridge else Color.Black
+                            tint = if (selected.value == index) Color(0xFF00BFFF) else TipzonnBlack
                         )
                     },
                     label = {
                         Text(
                             text = bottomItem.title,
-                            color = if (selected.value == index) PacificBridge else Color.Black
+                            color = if (selected.value == index) Color(0xFF00BFFF) else TipzonnBlack
                         )
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Color(0xFF5CE4E4),
+                        unselectedIconColor = TipzonnBlack,
+                        selectedTextColor = Color(0xFF5CE4E4),
+                        unselectedTextColor = TipzonnBlack,
+                        indicatorColor = Color.White // Change this to your desired background color
+                    )
 
                 )
             }
