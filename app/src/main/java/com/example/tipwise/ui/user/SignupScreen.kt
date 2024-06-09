@@ -45,6 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.utils.NetworkResult
 import com.example.tipwise.utils.ProfileSetupManager
 import com.example.tipwise.utils.TokenManager
@@ -103,6 +105,7 @@ fun SignupScreen(
                 .padding(horizontal = 10.dp),
             text = "Create New Account",
             fontSize = 30.sp,
+            color = TipzonnBlack
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -111,7 +114,8 @@ fun SignupScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
             text = "Please provide all the required information",
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = TipzonnBlack
         )
         Spacer(modifier = Modifier.height(26.dp))
         OutlinedTextField(
@@ -119,15 +123,15 @@ fun SignupScreen(
             onValueChange = { username = it },
             label = { Text(text = "Username ") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -139,15 +143,15 @@ fun SignupScreen(
             onValueChange = { email = it },
             label = { Text("Email") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -159,15 +163,15 @@ fun SignupScreen(
             onValueChange = { contactNumber = it },
             label = { Text("Contact Number") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
@@ -180,15 +184,15 @@ fun SignupScreen(
             onValueChange = { address = it },
             label = { Text("Address") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -207,19 +211,20 @@ fun SignupScreen(
                     Icon(
                         imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         contentDescription = null,
+                        tint = TipzonnBlack
                     )
                 }
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -249,7 +254,7 @@ fun SignupScreen(
                 }
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = PacificBridge
+                containerColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -268,7 +273,7 @@ fun SignupScreen(
         ) {
             Text(
                 text = "Already have an account? Login",
-                color = PacificBridge,
+                color = TipzonnLight,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -282,7 +287,7 @@ fun SignupScreen(
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(color = PacificBridge)
+            CircularProgressIndicator(color = TipzonnLight)
         }
     }
 }
