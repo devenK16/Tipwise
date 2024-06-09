@@ -1,9 +1,11 @@
 package com.example.tipwise.ui.user
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +46,8 @@ import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserLoginRequest
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.utils.NetworkResult
 import com.example.tipwise.utils.ProfileSetupManager
 import com.example.tipwise.utils.TokenManager
@@ -70,6 +74,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -80,6 +85,7 @@ fun LoginScreen(
                 .padding(horizontal = 10.dp),
             text = "Welcome Back!",
             fontSize = 30.sp,
+            color = TipzonnBlack
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -88,7 +94,8 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
             text = "Login to access your account",
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = TipzonnBlack
         )
         Spacer(modifier = Modifier.height(48.dp))
         OutlinedTextField(
@@ -96,15 +103,15 @@ fun LoginScreen(
             onValueChange = { identifier = it },
             label = { Text("Email or Contact Number") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,19 +130,20 @@ fun LoginScreen(
                     Icon(
                         imageVector = icon,
                         contentDescription = "",
+                        tint = TipzonnBlack
                     )
                 }
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = PacificBridge,
-                unfocusedBorderColor = Color.Black,
-                focusedLabelColor = PacificBridge,
-                unfocusedLabelColor = Color.Black,
-                focusedTrailingIconColor = PacificBridge,
-                unfocusedTrailingIconColor = Color.Black,
-                focusedTextColor = PacificBridge,
-                unfocusedTextColor = Color.Black,
-                cursorColor = PacificBridge
+                focusedBorderColor = TipzonnLight,
+                unfocusedBorderColor = TipzonnBlack,
+                focusedLabelColor = TipzonnLight,
+                unfocusedLabelColor = TipzonnBlack,
+                focusedTrailingIconColor = TipzonnLight,
+                unfocusedTrailingIconColor = TipzonnBlack,
+                focusedTextColor = TipzonnLight,
+                unfocusedTextColor = TipzonnBlack,
+                cursorColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -174,7 +182,7 @@ fun LoginScreen(
 
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = PacificBridge
+                containerColor = TipzonnLight
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -194,13 +202,25 @@ fun LoginScreen(
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(
-                text = "Don't have an account? Register Now",
-                color = PacificBridge,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Don't have an account? ",
+                    color = TipzonnBlack,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Register Now",
+                    color = TipzonnLight,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
     }
@@ -212,7 +232,7 @@ fun LoginScreen(
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(color = PacificBridge)
+            CircularProgressIndicator(color = TipzonnLight)
         }
     }
 

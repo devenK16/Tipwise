@@ -1,6 +1,7 @@
 package com.example.tipwise.ui.user
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,6 +96,7 @@ fun SignupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -272,7 +274,13 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "Already have an account? Login",
+                text = "Already have an account?",
+                color = TipzonnBlack,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = " Login",
                 color = TipzonnLight,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
