@@ -38,6 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.R
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.ui.user.AuthViewModel
 import com.example.tipwise.utils.TokenManager
 
@@ -78,6 +80,7 @@ fun ProfileCardUI(navController: NavHostController) {
                     text = "Check Your Profile",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
+                    color = TipzonnBlack
                 )
 
 //                Text(
@@ -98,7 +101,7 @@ fun ProfileCardUI(navController: NavHostController) {
                         defaultElevation = 0.dp,
                         pressedElevation = 2.dp
                     ),
-                    colors = ButtonDefaults.buttonColors(containerColor = PacificBridge)
+                    colors = ButtonDefaults.buttonColors(containerColor = TipzonnLight)
                 ) {
                     Text(
                         text = "Update",
@@ -133,7 +136,8 @@ fun GeneralUI(navController: NavHostController) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            color = TipzonnBlack
         )
 
         SupportItem(
@@ -159,7 +163,8 @@ fun SupportOptionsUI() {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            color = TipzonnBlack
         )
         SupportItem(
             icon = R.drawable.ic_whatsapp,
@@ -227,6 +232,7 @@ fun SupportItem(icon: Int, mainText: String, onClick: () -> Unit) {
                     text = mainText,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
+                    color = TipzonnBlack
                 )
             }
             Icon(
