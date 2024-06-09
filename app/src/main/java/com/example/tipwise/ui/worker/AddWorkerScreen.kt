@@ -59,6 +59,8 @@ import coil.request.ImageRequest
 import com.example.tipwise.models.WorkerRequest
 import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.utils.NetworkResult
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
@@ -110,16 +112,17 @@ fun AddWorkerScreen(
     // Handle workerResult and update state variables accordingly
     LaunchedEffect(workerResult) {
         if (workerResult is NetworkResult.Success && workerId != null) {
-            (workerResult as NetworkResult.Success<List<WorkerResponse>>).data?.firstOrNull { it._id == workerId }?.let { worker ->
-                name = worker.name
-                profession = worker.profession
-                upiId = worker.upiId
-                bankAccountName = worker.bankAccountName
-                bankAccountNumber = worker.bankAccountNumber
-                ifscCode = worker.ifscCode
-                imageUrl1 = worker.photo
-                contactNo = worker.contactNo
-            }
+            (workerResult as NetworkResult.Success<List<WorkerResponse>>).data?.firstOrNull { it._id == workerId }
+                ?.let { worker ->
+                    name = worker.name
+                    profession = worker.profession
+                    upiId = worker.upiId
+                    bankAccountName = worker.bankAccountName
+                    bankAccountNumber = worker.bankAccountNumber
+                    ifscCode = worker.ifscCode
+                    imageUrl1 = worker.photo
+                    contactNo = worker.contactNo
+                }
         }
     }
 
@@ -226,14 +229,24 @@ fun AddWorkerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (workerId != null) "Update Worker" else "Add Worker") },
+                title = {
+                    Text(
+                        text = if (workerId != null) "Update Worker" else "Add Worker",
+                        color = TipzonnBlack
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = TipzonnBlack
+                        )
                     }
                 }
             )
-        }
+        },
+        containerColor = Color.White
     ) {
         Column(
             modifier = Modifier
@@ -279,15 +292,15 @@ fun AddWorkerScreen(
                 label = { Text("Name") },
                 isError = nameError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
+                    focusedBorderColor = TipzonnLight,
+                    unfocusedBorderColor = TipzonnBlack,
+                    focusedLabelColor = TipzonnLight,
+                    unfocusedLabelColor = TipzonnBlack,
+                    focusedTrailingIconColor = TipzonnLight,
+                    unfocusedTrailingIconColor = TipzonnBlack,
+                    focusedTextColor = TipzonnLight,
+                    unfocusedTextColor = TipzonnBlack,
+                    cursorColor = TipzonnLight
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -301,15 +314,15 @@ fun AddWorkerScreen(
                 label = { Text("Profession") },
                 isError = professionError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
+                    focusedBorderColor = TipzonnLight,
+                    unfocusedBorderColor = TipzonnBlack,
+                    focusedLabelColor = TipzonnLight,
+                    unfocusedLabelColor = TipzonnBlack,
+                    focusedTrailingIconColor = TipzonnLight,
+                    unfocusedTrailingIconColor = TipzonnBlack,
+                    focusedTextColor = TipzonnLight,
+                    unfocusedTextColor = TipzonnBlack,
+                    cursorColor = TipzonnLight
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -323,15 +336,15 @@ fun AddWorkerScreen(
                 label = { Text("UPI ID") },
                 isError = upiIdError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
+                    focusedBorderColor = TipzonnLight,
+                    unfocusedBorderColor = TipzonnBlack,
+                    focusedLabelColor = TipzonnLight,
+                    unfocusedLabelColor = TipzonnBlack,
+                    focusedTrailingIconColor = TipzonnLight,
+                    unfocusedTrailingIconColor = TipzonnBlack,
+                    focusedTextColor = TipzonnLight,
+                    unfocusedTextColor = TipzonnBlack,
+                    cursorColor = TipzonnLight
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -345,15 +358,15 @@ fun AddWorkerScreen(
                 label = { Text("Contact No.") },
                 isError = contactNoError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = PacificBridge,
-                    unfocusedBorderColor = Color.Black,
-                    focusedLabelColor = PacificBridge,
-                    unfocusedLabelColor = Color.Black,
-                    focusedTrailingIconColor = PacificBridge,
-                    unfocusedTrailingIconColor = Color.Black,
-                    focusedTextColor = PacificBridge,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = PacificBridge
+                    focusedBorderColor = TipzonnLight,
+                    unfocusedBorderColor = TipzonnBlack,
+                    focusedLabelColor = TipzonnLight,
+                    unfocusedLabelColor = TipzonnBlack,
+                    focusedTrailingIconColor = TipzonnLight,
+                    unfocusedTrailingIconColor = TipzonnBlack,
+                    focusedTextColor = TipzonnLight,
+                    unfocusedTextColor = TipzonnBlack,
+                    cursorColor = TipzonnLight
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
@@ -363,11 +376,11 @@ fun AddWorkerScreen(
             Text(
                 text = errorMessage,
                 modifier = Modifier
-                    .padding(start = 10.dp , end = 10.dp , top = 10.dp ),
+                    .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                 color = Color.Red,
                 fontSize = 10.sp
             )
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -376,19 +389,18 @@ fun AddWorkerScreen(
                 Button(
                     onClick = {
                         val (isValid, message) = viewModel.validateCredentials(
-                            name ,
+                            name,
                             upiId,
                             contactNo
                         )
-                        if( isValid  ){
+                        if (isValid) {
                             handleFormSubmission()
-                        }
-                        else {
+                        } else {
                             errorMessage = message
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PacificBridge
+                        containerColor = TipzonnLight
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -403,7 +415,7 @@ fun AddWorkerScreen(
                 if (workerId != null) {
                     Button(
                         onClick = {
-                            viewModel.deleteWorker(workerId , imageUrl1)
+                            viewModel.deleteWorker(workerId, imageUrl1)
                             navController.navigateUp()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -443,7 +455,7 @@ fun ImageUploadButton(
 
     if (imageUrl.isEmpty()) { // Check if imageUrl is empty
         CircleWithText(
-            text = "Upload",
+            text = "Upload Image",
             modifier = modifier,
             onClick = {
                 launcher.launch("image/*")
@@ -494,7 +506,7 @@ fun CircleWithText(
         ) {
             Text(
                 text = text,
-                color = Color.Black,
+                color = TipzonnBlack,
                 fontSize = 20.sp
             )
         }

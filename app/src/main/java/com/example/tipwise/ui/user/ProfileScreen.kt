@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,8 @@ import androidx.navigation.NavHostController
 import com.example.tipwise.models.UserRequest
 import com.example.tipwise.models.UserResponse
 import com.example.tipwise.ui.theme.PacificBridge
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.utils.NetworkResult
 import com.example.tipwise.utils.ProfileSetupManager
 
@@ -83,18 +87,26 @@ fun ProfileScreen(
         topBar = {
             TopAppBar(
                 title = { Text(
-                    text = "Profile",
-                    color = PacificBridge,
-                    fontSize = 28.sp
+                    text = "Update Profile",
+                    color = TipzonnBlack,
+                    fontSize = 24.sp
                 ) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
                         navController.navigate("home")
                     }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = TipzonnBlack
+                            )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                ),
+                modifier = Modifier.shadow(2.dp)
             )
         },
         content = { innerPadding ->
@@ -111,15 +123,15 @@ fun ProfileScreen(
                     onValueChange = { email = it },
                     label = { Text(text = "Email") },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PacificBridge,
-                        unfocusedBorderColor = Color.Black,
-                        focusedLabelColor = PacificBridge,
-                        unfocusedLabelColor = Color.Black,
-                        focusedTrailingIconColor = PacificBridge,
-                        unfocusedTrailingIconColor = Color.Black,
-                        focusedTextColor = PacificBridge,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = PacificBridge
+                        focusedBorderColor = TipzonnLight,
+                        unfocusedBorderColor = TipzonnBlack,
+                        focusedLabelColor = TipzonnLight,
+                        unfocusedLabelColor = TipzonnBlack,
+                        focusedTrailingIconColor = TipzonnLight,
+                        unfocusedTrailingIconColor = TipzonnBlack,
+                        focusedTextColor = TipzonnLight,
+                        unfocusedTextColor = TipzonnBlack,
+                        cursorColor = TipzonnLight
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -133,15 +145,15 @@ fun ProfileScreen(
                     onValueChange = { restaurantName = it },
                     label = { Text(text = "Restaurant Name") },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PacificBridge,
-                        unfocusedBorderColor = Color.Black,
-                        focusedLabelColor = PacificBridge,
-                        unfocusedLabelColor = Color.Black,
-                        focusedTrailingIconColor = PacificBridge,
-                        unfocusedTrailingIconColor = Color.Black,
-                        focusedTextColor = PacificBridge,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = PacificBridge
+                        focusedBorderColor = TipzonnLight,
+                        unfocusedBorderColor = TipzonnBlack,
+                        focusedLabelColor = TipzonnLight,
+                        unfocusedLabelColor = TipzonnBlack,
+                        focusedTrailingIconColor = TipzonnLight,
+                        unfocusedTrailingIconColor = TipzonnBlack,
+                        focusedTextColor = TipzonnLight,
+                        unfocusedTextColor = TipzonnBlack,
+                        cursorColor = TipzonnLight
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,15 +167,15 @@ fun ProfileScreen(
                     onValueChange = { address = it },
                     label = { Text(text = "Address") },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PacificBridge,
-                        unfocusedBorderColor = Color.Black,
-                        focusedLabelColor = PacificBridge,
-                        unfocusedLabelColor = Color.Black,
-                        focusedTrailingIconColor = PacificBridge,
-                        unfocusedTrailingIconColor = Color.Black,
-                        focusedTextColor = PacificBridge,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = PacificBridge
+                        focusedBorderColor = TipzonnLight,
+                        unfocusedBorderColor = TipzonnBlack,
+                        focusedLabelColor = TipzonnLight,
+                        unfocusedLabelColor = TipzonnBlack,
+                        focusedTrailingIconColor = TipzonnLight,
+                        unfocusedTrailingIconColor = TipzonnBlack,
+                        focusedTextColor = TipzonnLight,
+                        unfocusedTextColor = TipzonnBlack,
+                        cursorColor = TipzonnLight
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,15 +189,15 @@ fun ProfileScreen(
                     onValueChange = { contactNumber = it },
                     label = { Text(text = "Contact Number") },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PacificBridge,
-                        unfocusedBorderColor = Color.Black,
-                        focusedLabelColor = PacificBridge,
-                        unfocusedLabelColor = Color.Black,
-                        focusedTrailingIconColor = PacificBridge,
-                        unfocusedTrailingIconColor = Color.Black,
-                        focusedTextColor = PacificBridge,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = PacificBridge
+                        focusedBorderColor = TipzonnLight,
+                        unfocusedBorderColor = TipzonnBlack,
+                        focusedLabelColor = TipzonnLight,
+                        unfocusedLabelColor =TipzonnBlack,
+                        focusedTrailingIconColor = TipzonnLight,
+                        unfocusedTrailingIconColor = TipzonnBlack,
+                        focusedTextColor = TipzonnLight,
+                        unfocusedTextColor = TipzonnBlack,
+                        cursorColor = TipzonnLight
                     ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
@@ -209,20 +221,21 @@ fun ProfileScreen(
                         navController.navigate("home")
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PacificBridge
+                        containerColor = TipzonnLight
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                 ) {
                     Text(
-                        text = "Continue",
+                        text = "Update",
                         fontSize = 20.sp,
                         color = Color.White
                     )
                 }
             }
-        }
+        },
+        containerColor = Color.White
     )
 
 
