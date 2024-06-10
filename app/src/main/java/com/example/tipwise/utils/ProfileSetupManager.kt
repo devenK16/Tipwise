@@ -11,7 +11,7 @@ import javax.inject.Inject
 class ProfileSetupManager @Inject constructor(@ApplicationContext context: Context) {
     private val sharedPreferences = context.getSharedPreferences("profile_setup", Context.MODE_PRIVATE)
 
-    fun saveUserId(userId: String) {
+    fun saveUserId(userId: String?) {
         CoroutineScope(Dispatchers.IO).launch {
             sharedPreferences.edit().putString("user_id", userId).apply()
         }

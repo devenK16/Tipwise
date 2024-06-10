@@ -41,6 +41,7 @@ import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.ui.theme.TipzonnBlack
 import com.example.tipwise.ui.theme.TipzonnLight
 import com.example.tipwise.ui.user.AuthViewModel
+import com.example.tipwise.utils.ProfileSetupManager
 import com.example.tipwise.utils.TokenManager
 
 @Composable
@@ -268,7 +269,8 @@ fun logOut(context: Context  , navController: NavHostController){
     // Clear the user token
     val tokenManager = TokenManager(context)
     tokenManager.saveToken(null)
-
+    val profileManager = ProfileSetupManager(context)
+    profileManager.saveUserId(null)
     // Navigate to the login screen
     navController.navigate("login") {
         popUpTo(navController.graph.startDestinationId) {
