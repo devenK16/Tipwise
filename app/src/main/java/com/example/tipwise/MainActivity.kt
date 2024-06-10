@@ -17,6 +17,7 @@ import com.example.tipwise.ui.SettingsScreen
 import com.example.tipwise.ui.theme.TipwiseTheme
 import com.example.tipwise.ui.user.LoginScreen
 import com.example.tipwise.ui.user.ProfileScreen
+import com.example.tipwise.ui.user.ReviewsScreen
 import com.example.tipwise.ui.user.SignupScreen
 import com.example.tipwise.ui.worker.AddWorkerScreen
 import com.example.tipwise.ui.worker.FeedScreen
@@ -84,6 +85,11 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("profile") {
                         ProfileScreen(
+                            navController = navController
+                        )
+                    }
+                    composable("reviews"){
+                        ReviewsScreen(
                             navController = navController
                         )
                     }

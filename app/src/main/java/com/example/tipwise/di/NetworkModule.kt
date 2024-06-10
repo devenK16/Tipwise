@@ -3,6 +3,7 @@ package com.example.tipwise.di
 
 import com.example.tipwise.api.UsersAPI
 import com.example.tipwise.api.AuthInterceptor
+import com.example.tipwise.api.ReviewAPI
 import com.example.tipwise.api.WorkersAPI
 import com.example.tipwise.utils.Constants.BASE_URL
 import dagger.Module
@@ -42,6 +43,12 @@ class NetworkModule {
     @Singleton
     fun providesWorkersAPI( retrofitBuilder : Retrofit.Builder , okHttpClient: OkHttpClient) : WorkersAPI{
         return retrofitBuilder.client(okHttpClient).build().create(WorkersAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesReviewAPI( retrofitBuilder : Retrofit.Builder) : ReviewAPI {
+        return retrofitBuilder.build().create(ReviewAPI::class.java)
     }
 
 }
