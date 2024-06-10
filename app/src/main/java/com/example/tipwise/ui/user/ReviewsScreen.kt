@@ -1,10 +1,16 @@
 package com.example.tipwise.ui.user
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,10 +20,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.tipwise.models.Review
+import com.example.tipwise.ui.theme.TipzonnBlack
+import com.example.tipwise.ui.theme.TipzonnLightBackground
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
@@ -57,12 +72,46 @@ fun ReviewsScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReviewCard(review: Review) {
-    Card {
-        Column {
-            Text(text = review.reviewText)
-            Text(text = review.date)
+    val formattedDate = remember(review.date) {
+        formatDateString(review.date)
+    }
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = TipzonnLightBackground
+        )
+    ) {
+        Column (
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Text(
+                text = review.reviewText,
+                color = TipzonnBlack,
+                fontSize = 18.sp
+            )
+            Text(
+                text = formattedDate,
+                color = TipzonnBlack,
+                fontSize = 14.sp
+            )
         }
+    }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+private fun formatDateString(dateString: String): String {
+    return try {
+        val zonedDateTime = ZonedDateTime.parse(dateString)
+        val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")
+        zonedDateTime.format(formatter)
+    } catch (e: Exception) {
+        Log.e("ReviewCard", "Error parsing date: $dateString", e)
+        dateString // fallback to original date string if parsing fails
     }
 }

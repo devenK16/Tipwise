@@ -113,12 +113,12 @@ fun BottomNavigationBar(
             icon = Icons.Rounded.Home
         ),
         BottomItem(
-            title = "settings",
-            icon = Icons.Rounded.Settings
-        ),
-        BottomItem(
             title = "reviews",
             icon = Icons.Rounded.Reviews
+        ),
+        BottomItem(
+            title = "settings",
+            icon = Icons.Rounded.Settings
         )
     )
 
@@ -145,13 +145,15 @@ fun BottomNavigationBar(
 
                             1 -> {
                                 bottomNavController.popBackStack()
-                                bottomNavController.navigate("settings")
+                                bottomNavController.navigate("reviews")
                             }
 
                             2 -> {
                                 bottomNavController.popBackStack()
-                                bottomNavController.navigate("reviews")
+                                bottomNavController.navigate("settings")
                             }
+
+
 
                         }
                     },
