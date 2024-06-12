@@ -3,14 +3,22 @@ package com.example.tipwise.ui.user
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarHalf
+import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,6 +104,12 @@ fun ReviewCard(review: Review) {
                 color = TipzonnBlack,
                 fontSize = 18.sp
             )
+            // Rating bar based on rating
+            RatingBar(
+                modifier = Modifier.size(20.dp),
+                rating = review.rating.toDouble(),
+                starsColor = Color.Yellow
+            )
             Text(
                 text = formattedDate,
                 color = TipzonnBlack,
@@ -104,6 +118,40 @@ fun ReviewCard(review: Review) {
         }
     }
 }
+
+@Composable
+fun RatingBar(
+    modifier: Modifier = Modifier,
+    rating: Double = 0.0,
+    stars: Int = 5,
+    onRatingChanged: (Double) -> Unit = {},
+    starsColor: Color = Color.Yellow
+) {
+    var isHalfStar = (rating % 1) != 0.0
+
+    Row {
+        for (index in 1..rating.toInt()) {
+            Icon(
+                imageVector =
+                if (index <= rating) {
+                    Icons.Rounded.Star
+                } else {
+                    if (isHalfStar) {
+                        isHalfStar = false
+                        Icons.Rounded.StarHalf
+                    } else {
+                        Icons.Rounded.StarOutline
+                    }
+                },
+                contentDescription = null,
+                tint = starsColor,
+                modifier = modifier
+                    .clickable { onRatingChanged(index.toDouble()) }
+            )
+        }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 private fun formatDateString(dateString: String): String {
     return try {
