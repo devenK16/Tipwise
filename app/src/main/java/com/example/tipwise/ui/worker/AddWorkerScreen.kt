@@ -150,14 +150,14 @@ fun AddWorkerScreen(
 
     fun saveWorker(imageUrl: String) {
         val workerRequest = WorkerRequest(
-            name = name,
-            profession = profession,
-            bankAccountName = bankAccountName,
-            bankAccountNumber = bankAccountNumber,
-            ifscCode = ifscCode,
-            photo = imageUrl,
-            upiId = upiId,
-            contactNo = contactNo
+            name = name.trim(),
+            profession = profession.trim(),
+            bankAccountName = bankAccountName.trim(),
+            bankAccountNumber = bankAccountNumber.trim(),
+            ifscCode = ifscCode.trim(),
+            photo = imageUrl.trim(),
+            upiId = upiId.trim(),
+            contactNo = contactNo.trim()
         )
         if (workerId != null) {
             viewModel.updateWorker(workerRequest, workerId)
@@ -169,6 +169,11 @@ fun AddWorkerScreen(
 
     // Handle form submission
     fun handleFormSubmission() {
+        name = name.trim()
+        profession = profession.trim()
+        upiId = upiId.trim()
+        contactNo = contactNo.trim()
+
         // Reset error states
         nameError = name.isEmpty()
         professionError = profession.isEmpty()

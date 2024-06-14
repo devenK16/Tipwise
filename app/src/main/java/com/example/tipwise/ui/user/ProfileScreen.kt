@@ -211,11 +211,11 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         val updatedUser = UserRequest(
-                            email = email,
-                            address = address,
-                            name = restaurantName,
-                            password = password,
-                            contactNumber = contactNumber
+                            email = email.trim(),
+                            address = address.trim(),
+                            name = restaurantName.trim(),
+                            password = password.trim(),
+                            contactNumber = contactNumber.trim()
                         )
                         viewModel.updateUser(userId!!, updatedUser)
                         navController.navigate("home")

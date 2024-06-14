@@ -6,6 +6,7 @@ import com.example.tipwise.api.AuthInterceptor
 import com.example.tipwise.api.ReviewAPI
 import com.example.tipwise.api.WorkersAPI
 import com.example.tipwise.utils.Constants.BASE_URL
+import com.example.tipwise.utils.Constants.TEST_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

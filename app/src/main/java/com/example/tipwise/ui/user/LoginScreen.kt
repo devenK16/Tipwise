@@ -159,8 +159,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(44.dp))
         Button(
             onClick = {
-                val isEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(identifier).matches()
-                val isContactNumber = identifier.length == 10 && identifier.all { it.isDigit() }
+                val isEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(identifier.trim()).matches()
+                val isContactNumber = identifier.trim().length == 10 && identifier.trim().all { it.isDigit() }
                 if (!isEmail && !isContactNumber) {
                     errorMessage = "Please enter a valid email or mobile number"
                 } else {
@@ -170,11 +170,11 @@ fun LoginScreen(
                     Log.d("LoginNumber", contactNumber)
                     Log.d("LoginPassword", password)
                     val (isValid, message) = viewModel.validateLoginCredentials(
-                        identifier,
-                        password
+                        identifier.trim(),
+                        password.trim()
                     )
                     if (isValid) {
-                        viewModel.loginUser(UserLoginRequest(identifier, password))
+                        viewModel.loginUser(UserLoginRequest(identifier = identifier.trim(), password = password.trim()))
                     } else {
                         errorMessage = message
                     }

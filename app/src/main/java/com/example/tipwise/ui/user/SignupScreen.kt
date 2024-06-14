@@ -243,14 +243,22 @@ fun SignupScreen(
         Button(
             onClick = {
                 val (isValid, message) = viewModel.validateCredentials(
-                    username,
-                    email,
-                    password,
+                    username.trim(),
+                    email.trim(),
+                    password.trim(),
                     isLogin = false,
-                    contactNumber
+                    contactNumber.trim()
                 )
                 if (isValid) {
-                    viewModel.registerUser(UserRequest(email, username, password , contactNumber , address))
+                    viewModel.registerUser(
+                        UserRequest(
+                            email = email.trim(),
+                            name = username.trim(),
+                            password = password.trim(),
+                            contactNumber = contactNumber.trim(),
+                            address = address.trim()
+                        )
+                    )
                 } else {
                     errorMessage = message
                 }
