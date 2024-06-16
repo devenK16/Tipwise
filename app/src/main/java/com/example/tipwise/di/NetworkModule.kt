@@ -3,6 +3,7 @@ package com.example.tipwise.di
 
 import com.example.tipwise.api.UsersAPI
 import com.example.tipwise.api.AuthInterceptor
+import com.example.tipwise.api.PasswordAPI
 import com.example.tipwise.api.ReviewAPI
 import com.example.tipwise.api.WorkersAPI
 import com.example.tipwise.utils.Constants.BASE_URL
@@ -50,6 +51,12 @@ class NetworkModule {
     @Singleton
     fun providesReviewAPI( retrofitBuilder : Retrofit.Builder) : ReviewAPI {
         return retrofitBuilder.build().create(ReviewAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPasswordAPI( retrofitBuilder : Retrofit.Builder , okHttpClient: OkHttpClient) : PasswordAPI {
+        return retrofitBuilder.client(okHttpClient).build().create(PasswordAPI::class.java)
     }
 
 }

@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,10 +50,16 @@ import com.example.tipwise.utils.TokenManager
 fun SettingsScreen(
     navController: NavHostController
 ) {
-    Column {
-        ProfileCardUI(navController)
-        GeneralUI(navController)
-        SupportOptionsUI()
+    LazyColumn {
+        item {
+            ProfileCardUI(navController)
+        }
+        item {
+            GeneralUI(navController)
+        }
+        item {
+            SupportOptionsUI()
+        }
     }
 
 }
@@ -144,7 +152,13 @@ fun GeneralUI(navController: NavHostController) {
         SupportItem(
             icon = R.drawable.ic_logout,
             mainText = "Log Out",
-            onClick = { logOut( context , navController) }
+            onClick = { logOut(context, navController) }
+        )
+
+        SupportItem(
+            icon = R.drawable.ic_password,
+            mainText = "Change Password",
+            onClick = { changePassword( navController ) }
         )
     }
 }
@@ -180,12 +194,12 @@ fun SupportOptionsUI() {
         SupportItem(
             icon = R.drawable.ic_authenticaiton,
             mainText = "Privacy Policy",
-            onClick = { openWebsite(context , "https://www.tipzonn.com/privacy")  }
+            onClick = { openWebsite(context, "https://www.tipzonn.com/privacy") }
         )
         SupportItem(
             icon = R.drawable.ic_info,
             mainText = "About Us",
-            onClick = { openWebsite(context , "https://www.tipzonn.com") }
+            onClick = { openWebsite(context, "https://www.tipzonn.com") }
         )
     }
 }
@@ -260,12 +274,12 @@ fun openEmail(context: Context, email: String) {
     startActivity(context, intent, null)
 }
 
-fun openWebsite(context: Context , websiteUrl : String) {
+fun openWebsite(context: Context, websiteUrl: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
     startActivity(context, intent, null)
 }
 
-fun logOut(context: Context  , navController: NavHostController){
+fun logOut(context: Context, navController: NavHostController) {
     // Clear the user token
     val tokenManager = TokenManager(context)
     tokenManager.saveToken(null)
@@ -277,4 +291,8 @@ fun logOut(context: Context  , navController: NavHostController){
             inclusive = true
         }
     }
+}
+
+fun changePassword( navController: NavHostController ){
+    navController.navigate("changePassword")
 }

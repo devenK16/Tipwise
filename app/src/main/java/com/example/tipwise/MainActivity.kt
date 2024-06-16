@@ -1,10 +1,12 @@
 package com.example.tipwise
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
@@ -15,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tipwise.ui.HomeScreen
 import com.example.tipwise.ui.SettingsScreen
 import com.example.tipwise.ui.theme.TipwiseTheme
+import com.example.tipwise.ui.user.ChangePasswordScreen
 import com.example.tipwise.ui.user.LoginScreen
 import com.example.tipwise.ui.user.ProfileScreen
 import com.example.tipwise.ui.user.ReviewsScreen
@@ -34,6 +37,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenManager: TokenManager
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +94,11 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("reviews"){
                         ReviewsScreen(
+                            navController = navController
+                        )
+                    }
+                    composable("changePassword"){
+                        ChangePasswordScreen(
                             navController = navController
                         )
                     }
