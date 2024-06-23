@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.tipwise.models.Review
 import com.example.tipwise.ui.theme.TipzonnBlack
 import com.example.tipwise.ui.theme.TipzonnLightBackground
@@ -46,38 +48,76 @@ fun ReviewsScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    val reviewResponse by viewModel.reviewLiveData.observeAsState()
-    val reviews = reviewResponse?.data ?: emptyList()
-    val userIdState = remember { mutableStateOf<String?>(null) }
+    val reviews = viewModel.reviews.collectAsLazyPagingItems()
 
-    LaunchedEffect(Unit) {
-        val userId = viewModel.getUserId()
-        if (userId != null) {
-            userIdState.value = userId
-            Log.d("ReviewUserIDTestValue", userId)
-        } else {
-            Log.e("ReviewsScreen", "User ID is null, cannot fetch reviews")
-        }
+    LaunchedEffect(reviews.loadState) {
+        val refresh = reviews.loadState.refresh
+        val append = reviews.loadState.append
+
+        Log.d("ReviewsPagination", "LoadState changed - Refresh: $refresh, Append: $append")
+        Log.d("ReviewsPagination", "Total items loaded: ${reviews.itemCount}")
     }
 
-    val currentUserId by rememberUpdatedState(userIdState.value)
-
-    LaunchedEffect(currentUserId) {
-        currentUserId?.let {
-            viewModel.getReviews(it)
-        }
-    }
-
-    if (userIdState.value != null) {
-        LazyColumn {
-            items(reviews) { review ->
+    LazyColumn {
+        items(
+            count = reviews.itemCount,
+            key = { index -> index }
+        ) { index ->
+            val review = reviews[index]
+            if (review != null) {
+                Log.d("ReviewsPagination", "Displaying review at index $index: ${review.reviewText}")
                 ReviewCard(review = review)
+            } else {
+                Log.d("ReviewsPagination", "Null review at index $index")
             }
         }
-    } else {
-        // Handle the case where userId is null (e.g., show an error message)
-        Text(text = "Unable to load reviews. Log out and Log in again")
+
+        reviews.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item {
+                        Log.d("ReviewsPagination", "Refresh loading")
+                        LoadingItem()
+                    }
+                }
+                loadState.append is LoadState.Loading -> {
+                    item {
+                        Log.d("ReviewsPagination", "Append loading")
+                        LoadingItem()
+                    }
+                }
+                loadState.refresh is LoadState.Error -> {
+                    val e = reviews.loadState.refresh as LoadState.Error
+                    item {
+                        Log.e("ReviewsPagination", "Refresh error: ${e.error.message}")
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            onRetryClick = { retry() }
+                        )
+                    }
+                }
+                loadState.append is LoadState.Error -> {
+                    val e = reviews.loadState.append as LoadState.Error
+                    item {
+                        Log.e("ReviewsPagination", "Append error: ${e.error.message}")
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            onRetryClick = { retry() }
+                        )
+                    }
+                }
+            }
+        }
     }
+}
+@Composable
+fun LoadingItem() {
+    // Implement a loading indicator
+}
+
+@Composable
+fun ErrorItem(message: String, onRetryClick: () -> Unit) {
+    // Implement an error message with retry button
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
