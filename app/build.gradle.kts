@@ -118,4 +118,7 @@ dependencies {
     // Paging 3
     implementation("androidx.paging:paging-runtime-ktx:3.3.0")
     implementation("androidx.paging:paging-compose:3.3.0")
+
+    // Image croper
+    implementation("com.github.yalantis:ucrop:2.2.6")
 }

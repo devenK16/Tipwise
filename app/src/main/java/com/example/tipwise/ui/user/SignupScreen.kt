@@ -123,7 +123,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = "Username ") },
+            label = { Text(text = "Business name") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = TipzonnLight,
                 unfocusedBorderColor = TipzonnBlack,

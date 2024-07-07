@@ -33,9 +33,9 @@ class WorkerViewModel @Inject constructor( private val workerRepository: WorkerR
     fun deleteWorker(workerId: String , imageUrl: String? = null){
         viewModelScope.launch {
             workerRepository.deleteWorker(workerId)
-            imageUrl?.let {
-                deleteImageFromFirebase(it)
-            }
+//            imageUrl?.let {
+//                deleteImageFromFirebase(it)
+//            }
         }
     }
 

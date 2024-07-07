@@ -62,7 +62,11 @@ import com.example.tipwise.models.WorkerResponse
 import com.example.tipwise.ui.theme.PacificBridge
 import com.example.tipwise.ui.theme.TipzonnBlack
 import com.example.tipwise.ui.theme.TipzonnLight
+import com.example.tipwise.utils.CropImageContract
+import com.example.tipwise.utils.CropImageContractOptions
+import com.example.tipwise.utils.CropImageOptions
 import com.example.tipwise.utils.NetworkResult
+import com.yalantis.ucrop.view.CropImageView
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import kotlinx.coroutines.Dispatchers
@@ -453,21 +457,47 @@ fun ImageUploadButton(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                onImageSelect(it)
+    val context = LocalContext.current
+    val cropActivityLauncher = rememberLauncherForActivityResult(
+        contract = CropImageContract(),
+        onResult = { result ->
+            if (result.isSuccessful) {
+                result.uriContent?.let { uri ->
+                    onImageSelect(uri)
+                }
+            } else {
+                // Handle crop failure
+                Log.e("ImageCrop", "Image crop failed: ${result.error?.message}")
             }
         }
     )
 
-    if (imageUrl.isEmpty()) { // Check if imageUrl is empty
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val destinationUri = Uri.fromFile(File(context.cacheDir, "cropped_${System.currentTimeMillis()}.jpg"))
+            cropActivityLauncher.launch(
+                CropImageContractOptions(
+                    uri = it,
+                    destinationUri = destinationUri,
+                    cropImageOptions = CropImageOptions(
+                        guidelines = 1, // ON
+                        cropShape = 0,  // OVAL
+                        aspectRatioX = 1f,
+                        aspectRatioY = 1f
+                    )
+                )
+            )
+        }
+    }
+
+    if (imageUrl.isEmpty()) {
         CircleWithText(
             text = "Upload Image",
             modifier = modifier,
             onClick = {
-                launcher.launch("image/*")
+                galleryLauncher.launch("image/*")
             }
         )
     } else {
@@ -476,7 +506,7 @@ fun ImageUploadButton(
                 .size(200.dp)
                 .clip(CircleShape)
                 .clickable {
-                    launcher.launch("image/*")
+                    galleryLauncher.launch("image/*")
                 }
         ) {
             AsyncImage(
